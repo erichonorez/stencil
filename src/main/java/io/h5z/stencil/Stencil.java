@@ -363,7 +363,6 @@ public final class Stencil {
     public static HtmlEl h6(Map<String, String> attrs, String content) {
         return h6(attrs, __(content));    
     }
-    
 
     public static class P extends Tag {
 
@@ -419,16 +418,102 @@ public final class Stencil {
         return new UnsafeText(content);
     }
 
-    public static Tag div(Tag... nodes) {
+    public static Tag div(HtmlEl... nodes) {
         return new Tag("div", Collections.emptyMap(), Arrays.asList(nodes));
     }
 
-    public static Tag div(Map<String, String> attributes, Tag... nodes) {
+    public static Tag div(Map<String, String> attributes, HtmlEl... nodes) {
         return new Tag("div", attributes, Arrays.asList(nodes));
     }
 
     public static Tag p(String content) {
         return new P(Collections.emptyMap(), Arrays.asList(new Text(content)));
+    }
+
+    public static class Form extends Tag {
+
+        public Form(Map<String, String> attributes, List<? extends HtmlEl> nodes) {
+            super("form", attributes, nodes);
+        }
+
+    }
+
+    public static HtmlEl form(Map<String, String> attrs, List<HtmlEl> es) {
+        return new Form(attrs, es); 
+    }
+
+    public static HtmlEl form(Map<String, String> attrs, HtmlEl... es) {
+        return new Form(attrs, Arrays.asList(es));
+    }
+
+    public static class Input extends Tag {
+
+        public Input(Map<String, String> attributes) {
+            super("input", attributes, Collections.emptyList());
+        }
+
+        @Override
+        public String toString() {
+            return new StringBuilder()
+                .append("<")
+                .append(this.name())
+                .append(
+                    this.attributes().entrySet()
+                        .stream()
+                        .map(kv -> 
+                            null == kv.getValue() 
+                                ? kv.getKey()
+                                : String.format("%s=\"%s\"", kv.getKey(), kv.getValue()))
+                        .reduce("", (a, b) -> String.format("%s %s", a, b))
+                )   
+                .append(" />")
+                .toString();
+        }
+
+    }
+
+    public static HtmlEl input(Map<String, String> attrs) {
+        return new Input(attrs);
+    }
+
+    public static class Label extends Tag {
+
+        public Label(Map<String, String> attributes, List<? extends HtmlEl> nodes) {
+            super("label", attributes, nodes);
+        }
+
+    }
+
+    public static HtmlEl label(Map<String, String> attrs, List<HtmlEl> es) {
+        return new Label(attrs, es);
+    }
+
+    public static HtmlEl label(Map<String, String> attrs, HtmlEl... es) {
+        return label(attrs, Arrays.asList(es));
+    }
+
+    public static HtmlEl label(List<HtmlEl> es) {
+        return label(Collections.emptyMap(), es);
+    }
+
+    public static HtmlEl label(HtmlEl... es) {
+        return label(Arrays.asList(es));
+    }
+
+    public static String escapeHTML(String str) {
+        return str.codePoints().mapToObj(c -> c > 127 || "\"'<>&".indexOf(c) != -1 ?
+                "&#" + c + ";" : new String(Character.toChars(c)))
+           .collect(Collectors.joining());
+    }
+
+    @SafeVarargs
+    public static Map<String, String> attrs(Entry<String, String>... attrs) {
+        return attrs(Arrays.asList(attrs));
+    }
+
+    public static Map<String, String> attrs(List<Entry<String, String>> attrs) {
+        return attrs.stream()
+            .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
     }
 
     public static Entry<String, String> id(String id) {
@@ -446,20 +531,36 @@ public final class Stencil {
                 .reduce("", (a, b) -> String.format("%s `%s", a, b))); 
     }
 
-    public static String escapeHTML(String str) {
-        return str.codePoints().mapToObj(c -> c > 127 || "\"'<>&".indexOf(c) != -1 ?
-                "&#" + c + ";" : new String(Character.toChars(c)))
-           .collect(Collectors.joining());
+    public static Entry<String, String> type(String type) {
+        return attr("type", type);
     }
 
-    @SafeVarargs
-    public static Map<String, String> attrs(Entry<String, String>... attrs) {
-        return attrs(Arrays.asList(attrs));
+    public static Entry<String, String> name(String name) {
+        return attr("name", name);
     }
 
-    public static Map<String, String> attrs(List<Entry<String, String>> attrs) {
-        return attrs.stream()
-            .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+    public static Entry<String, String> action(String action) {
+        return attr("action", action);
+    }
+
+    public static Entry<String, String> method(String method) {
+        return attr("name", method);
+    }
+
+    public static Entry<String, String> placeholder(String placeholder) {
+        return attr("placeholder", placeholder);
+    }
+
+    public static Entry<String, String> required() {
+        return attr("required", null);
+    }
+
+    public static Entry<String, String> value(String value) {
+        return attr("value", value);
+    }
+
+    public static Entry<String, String> _for(String _for) {
+        return attr("for", _for);
     }
 
     private static class Tuple2<T1, T2> implements Entry<T1, T2> {
@@ -487,5 +588,50 @@ public final class Stencil {
             throw new UnsupportedOperationException();
         }
 
+    }
+
+    public static void main(String[] args) {
+        html5(
+    head(
+        meta(attr("charset", "utf8")),
+        meta(attr("property", "og:image"),
+            attr("content", "https://developer.mozilla.org/static/img/opengraph-logo.png")),
+        title("hello, world"),
+        link(attr("rel", "icon"),
+            attr("href", "favicon.icon"),
+            attr("type", "image/x-icon"))),
+    body(
+        h1(attrs(id("main-tite"), classes("h1")), "This is a title h1"),
+        h2("This is a title h2"),
+        h3("This is a title h3"),
+        h4("This is a title h4"),
+        h5("This is a title h5"),
+        h6("This is a title h6"),
+        div(
+            attrs(
+                id("super"),
+                classes("class", "my-class")),
+            p("hello, world")),
+        form(
+            attrs(
+                attr("method", "POST"),
+                action("/authenticate")),
+            label(
+                __("Login :"),
+                input(
+                    attrs(
+                        attr("type", "text"),
+                        attr("name", "login"),
+                        placeholder("toto@example.com"),
+                        required()))),
+            label(attrs(attr("for", "password : "))),
+            input(
+                attrs(
+                    type("password"),
+                    name("password"),
+                    attr("required", null)))),
+        script(
+            attrs(
+                attr("src", "https://h5z.io/script.js"))))).toString();
     }
 }
