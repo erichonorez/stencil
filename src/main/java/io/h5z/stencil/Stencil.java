@@ -17,14 +17,14 @@ public final class Stencil {
         return new Tuple2<>(t1, t2);
     }
 
-    public interface HtmlEl {}
+    public interface Element {}
 
-    public static class Tag implements HtmlEl {
+    public static class HTMLElement implements Element {
         private String name;
         private final Map<String, String> attributes;
-        private final List<? extends HtmlEl> nodes;
+        private final List<? extends Element> nodes;
 
-        public Tag(String name, Map<String, String> attributes, List<? extends HtmlEl> nodes) {
+        public HTMLElement(String name, Map<String, String> attributes, List<? extends Element> nodes) {
             this.name = name;
             this.attributes = attributes;
             this.nodes = nodes;
@@ -32,7 +32,7 @@ public final class Stencil {
 
         public String name() { return this.name; }
         public Map<String, String> attributes() { return this.attributes; }
-        public List<? extends HtmlEl> node() { return this.nodes;  }
+        public List<? extends Element> node() { return this.nodes;  }
 
         @Override
         public String toString() { 
@@ -51,7 +51,7 @@ public final class Stencil {
                 .append(">")
                 .append(
                     this.nodes.stream()
-                        .map(HtmlEl::toString)
+                        .map(Element::toString)
                         .reduce("", (a, b) -> a + b))
                 .append("</")
                 .append(this.name)
@@ -65,11 +65,11 @@ public final class Stencil {
 
     }
 
-    public static class Html extends Tag {
+    public static class Html extends HTMLElement {
 
         private final String docType;
 
-        public Html(String docType, Map<String, String> attributes, List<? extends HtmlEl> nodes) {
+        public Html(String docType, Map<String, String> attributes, List<? extends Element> nodes) {
             super("html", attributes, nodes);
             this.docType = docType;
         }
@@ -84,27 +84,27 @@ public final class Stencil {
 
     }
 
-    public static HtmlEl html5(HtmlEl... elems) {
+    public static Element html5(Element... elems) {
         return new Html("<!DOCTYPE html>", Collections.emptyMap(), Arrays.asList(elems));
     }
 
-    public static HtmlEl html5(Map<String, String> attrs, HtmlEl... elems) {
+    public static Element html5(Map<String, String> attrs, Element... elems) {
         return new Html("<!DOCTYPE html>", attrs, Arrays.asList(elems));
     }
 
-    public static class Head extends Tag {
+    public static class Head extends HTMLElement {
 
-        public Head(List<HtmlEl> elems) {
+        public Head(List<Element> elems) {
             super("head", Collections.emptyMap(), elems);
         }
 
     }
 
-    public static HtmlEl head(HtmlEl... elems) {
+    public static Element head(Element... elems) {
         return new Head(Arrays.asList(elems));
     }
 
-    public static class Meta extends Tag {
+    public static class Meta extends HTMLElement {
 
         public Meta(Map<String, String> attributes) {
             super("meta", attributes, Collections.emptyList());
@@ -131,14 +131,14 @@ public final class Stencil {
     }
 
     @SafeVarargs
-    public static HtmlEl meta(Entry<String, String>... attrs) {
+    public static Element meta(Entry<String, String>... attrs) {
         return new Meta(new Hashtable<>() {{
             Arrays.stream(attrs)
                 .forEach(kv -> put(kv.getKey(), kv.getValue()));
         }});
     }
 
-    public static class Title extends Tag {
+    public static class Title extends HTMLElement {
 
         public Title(String content) {
             super("title", Collections.emptyMap(), Arrays.asList(new Text(content)));
@@ -146,11 +146,11 @@ public final class Stencil {
 
     }
 
-    public static HtmlEl title(String title) {
+    public static Element title(String title) {
         return new Title(title);
     }
 
-    public static class Link extends Tag {
+    public static class Link extends HTMLElement {
 
         public Link(Map<String, String> attributes) {
             super("link", attributes, Collections.emptyList());
@@ -177,14 +177,14 @@ public final class Stencil {
     }
 
     @SafeVarargs
-    public static HtmlEl link(Entry<String, String>... attrs) {
+    public static Element link(Entry<String, String>... attrs) {
         return new Meta(new Hashtable<>() {{
             Arrays.stream(attrs)
                 .forEach(kv -> put(kv.getKey(), kv.getValue()));
         }});
     }
 
-    public static class Script extends Tag {
+    public static class Script extends HTMLElement {
 
         public Script(Map<String, String> attributes, String content) {
             super("script", attributes, Arrays.asList(new UnsafeText(content)));
@@ -192,187 +192,187 @@ public final class Stencil {
 
     }
 
-    public static HtmlEl script(Map<String, String> attributes, String content) {
+    public static Element script(Map<String, String> attributes, String content) {
         return new Script(attributes, content);
     }
 
-    public static HtmlEl script(String content) {
+    public static Element script(String content) {
         return script(Collections.emptyMap(), content);
     }
 
-    public static HtmlEl script(Map<String, String> attributes) {
+    public static Element script(Map<String, String> attributes) {
         return script(attributes, "");
     }
 
-    public static class Body extends Tag {
+    public static class Body extends HTMLElement {
 
-        public Body(Map<String, String> attributes, List<? extends HtmlEl> nodes) {
+        public Body(Map<String, String> attributes, List<? extends Element> nodes) {
             super("body", attributes, nodes);
         }
 
     }
 
-    public static HtmlEl body(Map<String, String> attrs, HtmlEl... elems) {
+    public static Element body(Map<String, String> attrs, Element... elems) {
         return new Body(attrs, Arrays.asList(elems));
     }
 
-    public static HtmlEl body(HtmlEl... elems) {
+    public static Element body(Element... elems) {
         return body(Collections.emptyMap(), elems);
     }
 
-    public static class H1 extends Tag {
+    public static class H1 extends HTMLElement {
 
-        public H1(Map<String, String> attributes, List<? extends HtmlEl> nodes) {
+        public H1(Map<String, String> attributes, List<? extends Element> nodes) {
             super("h1", attributes, nodes);
         }
 
     }
 
-    public static HtmlEl h1(Map<String, String> attrs, HtmlEl... elems) {
+    public static Element h1(Map<String, String> attrs, Element... elems) {
         return new H1(attrs, Arrays.asList(elems));
     }
 
-    public static HtmlEl h1(String content) {
+    public static Element h1(String content) {
         return h1(__(content));
     }
 
-    public static HtmlEl h1(Map<String, String> attrs, String content) {
+    public static Element h1(Map<String, String> attrs, String content) {
         return h1(attrs, __(content));    
     }
 
-    public static HtmlEl h1(HtmlEl... elems) {
+    public static Element h1(Element... elems) {
         return h1(Collections.emptyMap(), elems);
     }
 
-    public static class H2 extends Tag {
+    public static class H2 extends HTMLElement {
 
-        public H2(Map<String, String> attributes, List<? extends HtmlEl> nodes) {
+        public H2(Map<String, String> attributes, List<? extends Element> nodes) {
             super("h2", attributes, nodes);
         }
 
     }
 
-    public static HtmlEl h2(Map<String, String> attrs, HtmlEl... elems) {
+    public static Element h2(Map<String, String> attrs, Element... elems) {
         return new H2(attrs, Arrays.asList(elems));
     }
 
-    public static HtmlEl h2(HtmlEl... elems) {
+    public static Element h2(Element... elems) {
         return h2(Collections.emptyMap(), elems);
     }
 
-    public static HtmlEl h2(String content) {
+    public static Element h2(String content) {
         return h2(__(content));
     }
 
-    public static HtmlEl h2(Map<String, String> attrs, String content) {
+    public static Element h2(Map<String, String> attrs, String content) {
         return h2(attrs, __(content));    
     }
 
-    public static class H3 extends Tag {
+    public static class H3 extends HTMLElement {
 
-        public H3(Map<String, String> attributes, List<? extends HtmlEl> nodes) {
+        public H3(Map<String, String> attributes, List<? extends Element> nodes) {
             super("h3", attributes, nodes);
         }
 
     }
 
-    public static HtmlEl h3(Map<String, String> attrs, HtmlEl... elems) {
+    public static Element h3(Map<String, String> attrs, Element... elems) {
         return new H3(attrs, Arrays.asList(elems));
     }
 
-    public static HtmlEl h3(HtmlEl... elems) {
+    public static Element h3(Element... elems) {
         return h3(Collections.emptyMap(), elems);
     }
 
-    public static HtmlEl h3(String content) {
+    public static Element h3(String content) {
         return h3(__(content));
     }
 
-    public static HtmlEl h3(Map<String, String> attrs, String content) {
+    public static Element h3(Map<String, String> attrs, String content) {
         return h3(attrs, __(content));    
     }
 
-    public static class H4 extends Tag {
+    public static class H4 extends HTMLElement {
 
-        public H4(Map<String, String> attributes, List<? extends HtmlEl> nodes) {
+        public H4(Map<String, String> attributes, List<? extends Element> nodes) {
             super("h4", attributes, nodes);
         }
 
     }
 
-    public static HtmlEl h4(Map<String, String> attrs, HtmlEl... elems) {
+    public static Element h4(Map<String, String> attrs, Element... elems) {
         return new H4(attrs, Arrays.asList(elems));
     }
 
-    public static HtmlEl h4(HtmlEl... elems) {
+    public static Element h4(Element... elems) {
         return h4(Collections.emptyMap(), elems);
     }
 
-    public static HtmlEl h4(String content) {
+    public static Element h4(String content) {
         return h4(__(content));
     }
 
-    public static HtmlEl h4(Map<String, String> attrs, String content) {
+    public static Element h4(Map<String, String> attrs, String content) {
         return h4(attrs, __(content));    
     }
 
-    public static class H5 extends Tag {
+    public static class H5 extends HTMLElement {
 
-        public H5(Map<String, String> attributes, List<? extends HtmlEl> nodes) {
+        public H5(Map<String, String> attributes, List<? extends Element> nodes) {
             super("h5", attributes, nodes);
         }
 
     }
 
-    public static HtmlEl h5(Map<String, String> attrs, HtmlEl... elems) {
+    public static Element h5(Map<String, String> attrs, Element... elems) {
         return new H5(attrs, Arrays.asList(elems));
     }
 
-    public static HtmlEl h5(HtmlEl... elems) {
+    public static Element h5(Element... elems) {
         return h5(Collections.emptyMap(), elems);
     }
 
-    public static HtmlEl h5(String content) {
+    public static Element h5(String content) {
         return h5(__(content));
     }
 
-    public static HtmlEl h5(Map<String, String> attrs, String content) {
+    public static Element h5(Map<String, String> attrs, String content) {
         return h5(attrs, __(content));    
     }
 
-    public static class H6 extends Tag {
+    public static class H6 extends HTMLElement {
 
-        public H6(Map<String, String> attributes, List<? extends HtmlEl> nodes) {
+        public H6(Map<String, String> attributes, List<? extends Element> nodes) {
             super("h6", attributes, nodes);
         }
 
     }
 
-    public static HtmlEl h6(Map<String, String> attrs, HtmlEl... elems) {
+    public static Element h6(Map<String, String> attrs, Element... elems) {
         return new H6(attrs, Arrays.asList(elems));
     }
 
-    public static HtmlEl h6(HtmlEl... elems) {
+    public static Element h6(Element... elems) {
         return h6(Collections.emptyMap(), elems);
     }
 
-    public static HtmlEl h6(String content) {
+    public static Element h6(String content) {
         return h6(__(content));
     }
 
-    public static HtmlEl h6(Map<String, String> attrs, String content) {
+    public static Element h6(Map<String, String> attrs, String content) {
         return h6(attrs, __(content));    
     }
 
-    public static class P extends Tag {
+    public static class P extends HTMLElement {
 
-        public P(Map<String, String> attributes, List<HtmlEl> nodes) {
+        public P(Map<String, String> attributes, List<Element> nodes) {
             super("p", attributes, nodes);
         }
 
     }
 
-    public static class Span extends Tag {
+    public static class Span extends HTMLElement {
 
         public Span(Map<String, String> attributes, List<Text> nodes) {
             super("span", attributes, nodes);
@@ -380,7 +380,7 @@ public final class Stencil {
 
     }
 
-    public static class Text implements HtmlEl {
+    public static class Text implements Element {
 
         private final String content;
 
@@ -395,11 +395,11 @@ public final class Stencil {
 
     }
 
-    public static HtmlEl __(String content) {
+    public static Element __(String content) {
         return new Text(content);
     }
 
-    public static class UnsafeText implements HtmlEl {
+    public static class UnsafeText implements Element {
 
         private final String content;
 
@@ -414,19 +414,19 @@ public final class Stencil {
 
     }
 
-    public static HtmlEl __u(String content) {
+    public static Element __u(String content) {
         return new UnsafeText(content);
     }
 
-    public static Tag div(HtmlEl... nodes) {
-        return new Tag("div", Collections.emptyMap(), Arrays.asList(nodes));
+    public static HTMLElement div(Element... nodes) {
+        return new HTMLElement("div", Collections.emptyMap(), Arrays.asList(nodes));
     }
 
-    public static Tag div(Map<String, String> attributes, HtmlEl... nodes) {
-        return new Tag("div", attributes, Arrays.asList(nodes));
+    public static HTMLElement div(Map<String, String> attributes, Element... nodes) {
+        return new HTMLElement("div", attributes, Arrays.asList(nodes));
     }
 
-    public static Tag p(String content) {
+    public static HTMLElement p(String content) {
         return new P(Collections.emptyMap(), Arrays.asList(new Text(content)));
     }
 
@@ -437,34 +437,34 @@ public final class Stencil {
     /**
      * @see <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form">The form element</a>
      */
-    public static class Form extends Tag {
+    public static class Form extends HTMLElement {
 
-        public Form(Map<String, String> attributes, List<? extends HtmlEl> nodes) {
+        public Form(Map<String, String> attributes, List<? extends Element> nodes) {
             super("form", attributes, nodes);
         }
 
     }
 
-    public static HtmlEl form(Map<String, String> attrs, List<HtmlEl> es) {
+    public static Element form(Map<String, String> attrs, List<Element> es) {
         return new Form(attrs, es); 
     }
 
-    public static HtmlEl form(Map<String, String> attrs, HtmlEl... es) {
+    public static Element form(Map<String, String> attrs, Element... es) {
         return form(attrs, Arrays.asList(es));
     }
 
-    public static HtmlEl form(List<HtmlEl> es) {
+    public static Element form(List<Element> es) {
         return form(Collections.emptyMap(), es);
     }
 
-    public static HtmlEl form(HtmlEl... es) {
+    public static Element form(Element... es) {
         return form(Collections.emptyMap(), Arrays.asList(es));
     }
 
     /**
      * @see <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">The Input element</a>
      */
-    public static class Input extends Tag {
+    public static class Input extends HTMLElement {
 
         public Input(Map<String, String> attributes) {
             super("input", attributes, Collections.emptyList());
@@ -490,77 +490,77 @@ public final class Stencil {
 
     }
 
-    public static HtmlEl input(Map<String, String> attrs) {
+    public static Element input(Map<String, String> attrs) {
         return new Input(attrs);
     }
 
     /**
      * @see <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/label">The Label element</a>
      */
-    public static class Label extends Tag {
+    public static class Label extends HTMLElement {
 
-        public Label(Map<String, String> attributes, List<? extends HtmlEl> nodes) {
+        public Label(Map<String, String> attributes, List<? extends Element> nodes) {
             super("label", attributes, nodes);
         }
 
     }
 
-    public static HtmlEl label(Map<String, String> attrs, List<HtmlEl> es) {
+    public static Element label(Map<String, String> attrs, List<Element> es) {
         return new Label(attrs, es);
     }
 
-    public static HtmlEl label(Map<String, String> attrs, HtmlEl... es) {
+    public static Element label(Map<String, String> attrs, Element... es) {
         return label(attrs, Arrays.asList(es));
     }
 
-    public static HtmlEl label(Map<String, String> attrs, String content) {
+    public static Element label(Map<String, String> attrs, String content) {
         return label(attrs, Arrays.asList(__(content)));
     }
 
-    public static HtmlEl label(List<HtmlEl> es) {
+    public static Element label(List<Element> es) {
         return label(Collections.emptyMap(), es);
     }
 
-    public static HtmlEl label(HtmlEl... es) {
+    public static Element label(Element... es) {
         return label(Arrays.asList(es));
     }
 
-    public static HtmlEl label(String content) {
+    public static Element label(String content) {
         return label(Collections.emptyMap(), Arrays.asList(__(content)));
     }
 
     /**
      * @see <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button">The button element</a>
      */
-    public static class Button extends Tag {
+    public static class Button extends HTMLElement {
 
-        public Button(Map<String, String> attributes, List<? extends HtmlEl> nodes) {
+        public Button(Map<String, String> attributes, List<? extends Element> nodes) {
             super("button", attributes, nodes);
         }
 
     }
 
-    public static HtmlEl button(Map<String, String> attrs, HtmlEl... es) {
+    public static Element button(Map<String, String> attrs, Element... es) {
         return form(attrs, Arrays.asList(es));
     }
 
-    public static HtmlEl button(Map<String, String> attrs, List<HtmlEl> es) {
+    public static Element button(Map<String, String> attrs, List<Element> es) {
         return new Form(attrs, es);
     }
 
-    public static HtmlEl button(HtmlEl... es) {
+    public static Element button(Element... es) {
         return form(Collections.emptyMap(), Arrays.asList(es));
     }
 
-    public static HtmlEl button(List<HtmlEl> es) {
+    public static Element button(List<Element> es) {
         return form(Collections.emptyMap(), es);
     }
 
-    public static HtmlEl button(Map<String, String> attrs, String content) {
+    public static Element button(Map<String, String> attrs, String content) {
         return form(attrs, Arrays.asList(__(content)));
     }
 
-    public static HtmlEl button(String content) {
+    public static Element button(String content) {
         return form(Collections.emptyMap(), Arrays.asList(__(content)));
     }
 
