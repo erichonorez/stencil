@@ -10,7 +10,8 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 public final class Stencil {
-    public Stencil() {
+    
+    private Stencil() {
         throw new IllegalAccessError();
     }
 
