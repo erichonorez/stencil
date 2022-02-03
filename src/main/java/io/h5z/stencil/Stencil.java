@@ -685,7 +685,7 @@ public final class Stencil {
     }
 
     public static Entry<String, String> method(String method) {
-        return attr("name", method);
+        return attr("method", method);
     }
 
     public static Entry<String, String> placeholder(String placeholder) {
