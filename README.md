@@ -25,6 +25,24 @@ html5(
                 id("super"),
                 classes("class", "my-class")),
             p("hello, world")),
+        form(
+            attrs(
+                attr("method", "POST"),
+                action("/authenticate")),
+            label(
+                __("Login :"),
+                input(
+                    attrs(
+                        attr("type", "text"),
+                        attr("name", "login"),
+                        placeholder("toto@example.com"),
+                        required()))),
+            label(attrs(attr("for", "password : "))),
+            input(
+                attrs(
+                    type("password"),
+                    name("password"),
+                    attr("required", null)))),
         script(
             attrs(
                 attr("src", "https://h5z.io/script.js"))))).toString();
