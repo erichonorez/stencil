@@ -611,6 +611,25 @@ public final class Stencil {
         return option(Collections.emptyMap(), content);
     }
 
+    /**
+     * @see <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea">The Textarea element</a>
+     */
+    public static class Textarea extends HTMLElement {
+
+        public Textarea(Map<String, String> attributes, List<? extends Element> nodes) {
+            super("textarea", attributes, nodes);
+        }
+
+    }
+
+    public static Element textarea(Map<String, String> attrs, String content) {
+        return new Textarea(attrs, Arrays.asList(__(content)));
+    }
+
+    public static Element textarea(String content) {
+        return textarea(Collections.emptyMap(), content);
+    }
+
     // ----------------------------------------------------------------------------------
     // Attribute static factories
     // ----------------------------------------------------------------------------------
@@ -674,6 +693,14 @@ public final class Stencil {
 
     public static Entry<String, String> selected() {
         return attr("selected", null);
+    }
+
+    public static Entry<String, String> rows(int i) {
+        return attr("rows", Integer.toString(i));
+    }
+
+    public static Entry<String, String> cols(int j) {
+        return attr("cols", Integer.toString(j));
     }
 
     // ----------------------------------------------------------------------------------
@@ -766,6 +793,8 @@ public final class Stencil {
                                 attrs(
                                     value("ADMIN")),
                                     "Admin")),
+                        textarea(attrs(id("description"), name("description")),
+                            "this is a content"),
                         button("Submit")),
                     script(
                         attrs(

@@ -14,7 +14,7 @@ html5(
             attr("href", "favicon.icon"),
             attr("type", "image/x-icon"))),
     body(
-        h1(attrs(id("main-tite"), classes("h1")), "This is a title h1"),
+        h1(attrs(id("main-tite"), classes("big-title")), "This is a title h1"),
         h2("This is a title h2"),
         h3("This is a title h3"),
         h4("This is a title h4"),
@@ -37,12 +37,27 @@ html5(
                         attr("name", "login"),
                         placeholder("toto@example.com"),
                         required()))),
-            label(attrs(attr("for", "password")), "password"),
+            label(attrs(attr("for", "password : "))),
             input(
                 attrs(
                     type("password"),
                     name("password"),
-                    attr("required", null)))),
+                    attr("required", null))),
+            select(
+                attrs(
+                    name("role")),
+                option(
+                    attrs(
+                        value("USER"),
+                        selected()),
+                        "User"),
+                option(
+                    attrs(
+                        value("ADMIN")),
+                        "Admin")),
+            textarea(attrs(id("description"), name("description")),
+                "this is a content"),
+            button("Submit")),
         script(
             attrs(
                 attr("src", "https://h5z.io/script.js"))))).toString();
@@ -63,4 +78,4 @@ html5(
 | <output>      |         ✅         |
 | <progress>    |                   |
 | <select>      |         ✅         |
-| <textarea>    |                   |
+| <textarea>    |         ✅         |
