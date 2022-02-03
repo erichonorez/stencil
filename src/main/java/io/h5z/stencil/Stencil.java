@@ -134,7 +134,7 @@ public final class Stencil {
 
     @SafeVarargs
     public static Element meta(Entry<String, String>... attrs) {
-        return new Meta(new Hashtable<>() {{
+        return new Meta(new Hashtable() {{
             Arrays.stream(attrs)
                 .forEach(kv -> put(kv.getKey(), kv.getValue()));
         }});
@@ -180,7 +180,7 @@ public final class Stencil {
 
     @SafeVarargs
     public static Element link(Entry<String, String>... attrs) {
-        return new Meta(new Hashtable<>() {{
+        return new Meta(new Hashtable() {{
             Arrays.stream(attrs)
                 .forEach(kv -> put(kv.getKey(), kv.getValue()));
         }});
