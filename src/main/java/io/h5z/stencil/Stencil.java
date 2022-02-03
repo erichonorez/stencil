@@ -1,5 +1,6 @@
 package io.h5z.stencil;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -13,10 +14,6 @@ public final class Stencil {
     
     private Stencil() {
         throw new IllegalAccessError();
-    }
-
-    private static <T1, T2> Tuple2<T1, T2> attr(T1 t1, T2 t2) {
-        return new Tuple2<>(t1, t2);
     }
 
     public interface Element {}
@@ -507,28 +504,31 @@ public final class Stencil {
 
     }
 
-    public static Element label(Map<String, String> attrs, List<Element> es) {
-        return new Label(attrs, es);
+    public static Element label(Map<String, String> attrs, String label, List<Element> es) {
+        List<Element> xs = new ArrayList<>();
+        xs.add(__(label));
+        xs.addAll(es);
+        return new Label(attrs, xs);
     }
 
-    public static Element label(Map<String, String> attrs, Element... es) {
-        return label(attrs, Arrays.asList(es));
+    public static Element label(Map<String, String> attrs, String label, Element... es) {
+        return label(attrs, label, Arrays.asList(es));
     }
 
-    public static Element label(Map<String, String> attrs, String content) {
-        return label(attrs, Arrays.asList(__(content)));
+    public static Element label(Map<String, String> attrs, String label) {
+        return label(attrs, label, Collections.emptyList());
     }
 
-    public static Element label(List<Element> es) {
-        return label(Collections.emptyMap(), es);
+    public static Element label(String label) {
+        return label(Collections.emptyMap(), label, Collections.emptyList());
     }
 
-    public static Element label(Element... es) {
-        return label(Arrays.asList(es));
+    public static Element label(String label, List<Element> es) {
+        return label(Collections.emptyMap(), label, es);
     }
 
-    public static Element label(String content) {
-        return label(Collections.emptyMap(), Arrays.asList(__(content)));
+    public static Element label(String label, Element... es) {
+        return label(Collections.emptyMap(), label, Arrays.asList(es));
     }
 
     /**
@@ -643,6 +643,18 @@ public final class Stencil {
     public static Map<String, String> attrs(List<Entry<String, String>> attrs) {
         return attrs.stream()
             .collect(HashMap::new, (m,v)->m.put(v.getKey(), v.getValue()), HashMap::putAll);
+    }
+
+    public static <T1, T2> Tuple2<T1, T2> attr(T1 t1, T2 t2) {
+        return new Tuple2<>(t1, t2);
+    }
+
+    public static Entry<String, String> lang(String lang) {
+        return attr("lang", lang);
+    }
+
+    public static Entry<String, String> charset(String charset) {
+        return attr("charset", charset);
     }
 
     public static Entry<String, String> id(String id) {
@@ -769,14 +781,14 @@ public final class Stencil {
                             attr("method", "POST"),
                             action("/authenticate")),
                         label(
-                            __("Login :"),
+                            "Login :",
                             input(
                                 attrs(
                                     attr("type", "text"),
                                     attr("name", "login"),
                                     placeholder("toto@example.com"),
                                     required()))),
-                        label(attrs(attr("for", "password : "))),
+                        label(attrs(attr("for", "password")), "password :"),
                         input(
                             attrs(
                                 type("password"),
@@ -800,6 +812,7 @@ public final class Stencil {
                     script(
                         attrs(
                             attr("src", "https://h5z.io/script.js"))))).toString();
-        System.out.println(page);
+        // System.out.println(page);
+        System.out.println(button(attrs(type("submit")), "Submit").toString());
     }
 }
