@@ -430,6 +430,13 @@ public final class Stencil {
         return new P(Collections.emptyMap(), Arrays.asList(new Text(content)));
     }
 
+    // ----------------------------------------------------------------------------------
+    // Form elements
+    // ----------------------------------------------------------------------------------
+
+    /**
+     * @see <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form">The form element</a>
+     */
     public static class Form extends Tag {
 
         public Form(Map<String, String> attributes, List<? extends HtmlEl> nodes) {
@@ -443,9 +450,20 @@ public final class Stencil {
     }
 
     public static HtmlEl form(Map<String, String> attrs, HtmlEl... es) {
-        return new Form(attrs, Arrays.asList(es));
+        return form(attrs, Arrays.asList(es));
     }
 
+    public static HtmlEl form(List<HtmlEl> es) {
+        return form(Collections.emptyMap(), es);
+    }
+
+    public static HtmlEl form(HtmlEl... es) {
+        return form(Collections.emptyMap(), Arrays.asList(es));
+    }
+
+    /**
+     * @see <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">The Input element</a>
+     */
     public static class Input extends Tag {
 
         public Input(Map<String, String> attributes) {
@@ -476,6 +494,9 @@ public final class Stencil {
         return new Input(attrs);
     }
 
+    /**
+     * @see <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/label">The Label element</a>
+     */
     public static class Label extends Tag {
 
         public Label(Map<String, String> attributes, List<? extends HtmlEl> nodes) {
@@ -492,6 +513,10 @@ public final class Stencil {
         return label(attrs, Arrays.asList(es));
     }
 
+    public static HtmlEl label(Map<String, String> attrs, String content) {
+        return label(attrs, Arrays.asList(__(content)));
+    }
+
     public static HtmlEl label(List<HtmlEl> es) {
         return label(Collections.emptyMap(), es);
     }
@@ -500,11 +525,48 @@ public final class Stencil {
         return label(Arrays.asList(es));
     }
 
-    public static String escapeHTML(String str) {
-        return str.codePoints().mapToObj(c -> c > 127 || "\"'<>&".indexOf(c) != -1 ?
-                "&#" + c + ";" : new String(Character.toChars(c)))
-           .collect(Collectors.joining());
+    public static HtmlEl label(String content) {
+        return label(Collections.emptyMap(), Arrays.asList(__(content)));
     }
+
+    /**
+     * @see <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button">The button element</a>
+     */
+    public static class Button extends Tag {
+
+        public Button(Map<String, String> attributes, List<? extends HtmlEl> nodes) {
+            super("button", attributes, nodes);
+        }
+
+    }
+
+    public static HtmlEl button(Map<String, String> attrs, HtmlEl... es) {
+        return form(attrs, Arrays.asList(es));
+    }
+
+    public static HtmlEl button(Map<String, String> attrs, List<HtmlEl> es) {
+        return new Form(attrs, es);
+    }
+
+    public static HtmlEl button(HtmlEl... es) {
+        return form(Collections.emptyMap(), Arrays.asList(es));
+    }
+
+    public static HtmlEl button(List<HtmlEl> es) {
+        return form(Collections.emptyMap(), es);
+    }
+
+    public static HtmlEl button(Map<String, String> attrs, String content) {
+        return form(attrs, Arrays.asList(__(content)));
+    }
+
+    public static HtmlEl button(String content) {
+        return form(Collections.emptyMap(), Arrays.asList(__(content)));
+    }
+
+    // ----------------------------------------------------------------------------------
+    // Attribute static factories
+    // ----------------------------------------------------------------------------------
 
     @SafeVarargs
     public static Map<String, String> attrs(Entry<String, String>... attrs) {
@@ -563,6 +625,16 @@ public final class Stencil {
         return attr("for", _for);
     }
 
+    // ----------------------------------------------------------------------------------
+    // Helper classes and static methods
+    // ----------------------------------------------------------------------------------
+
+    public static String escapeHTML(String str) {
+        return str.codePoints().mapToObj(c -> c > 127 || "\"'<>&".indexOf(c) != -1 ?
+                "&#" + c + ";" : new String(Character.toChars(c)))
+           .collect(Collectors.joining());
+    }
+
     private static class Tuple2<T1, T2> implements Entry<T1, T2> {
 
         private final T1 _1;
@@ -592,46 +664,47 @@ public final class Stencil {
 
     public static void main(String[] args) {
         html5(
-    head(
-        meta(attr("charset", "utf8")),
-        meta(attr("property", "og:image"),
-            attr("content", "https://developer.mozilla.org/static/img/opengraph-logo.png")),
-        title("hello, world"),
-        link(attr("rel", "icon"),
-            attr("href", "favicon.icon"),
-            attr("type", "image/x-icon"))),
-    body(
-        h1(attrs(id("main-tite"), classes("h1")), "This is a title h1"),
-        h2("This is a title h2"),
-        h3("This is a title h3"),
-        h4("This is a title h4"),
-        h5("This is a title h5"),
-        h6("This is a title h6"),
-        div(
-            attrs(
-                id("super"),
-                classes("class", "my-class")),
-            p("hello, world")),
-        form(
-            attrs(
-                attr("method", "POST"),
-                action("/authenticate")),
-            label(
-                __("Login :"),
-                input(
+            head(
+                meta(attr("charset", "utf8")),
+                meta(attr("property", "og:image"),
+                    attr("content", "https://developer.mozilla.org/static/img/opengraph-logo.png")),
+                title("hello, world"),
+                link(attr("rel", "icon"),
+                    attr("href", "favicon.icon"),
+                    attr("type", "image/x-icon"))),
+            body(
+                h1(attrs(id("main-tite"), classes("h1")), "This is a title h1"),
+                h2("This is a title h2"),
+                h3("This is a title h3"),
+                h4("This is a title h4"),
+                h5("This is a title h5"),
+                h6("This is a title h6"),
+                div(
                     attrs(
-                        attr("type", "text"),
-                        attr("name", "login"),
-                        placeholder("toto@example.com"),
-                        required()))),
-            label(attrs(attr("for", "password : "))),
-            input(
-                attrs(
-                    type("password"),
-                    name("password"),
-                    attr("required", null)))),
-        script(
-            attrs(
-                attr("src", "https://h5z.io/script.js"))))).toString();
+                        id("super"),
+                        classes("class", "my-class")),
+                    p("hello, world")),
+                form(
+                    attrs(
+                        attr("method", "POST"),
+                        action("/authenticate")),
+                    label(
+                        __("Login :"),
+                        input(
+                            attrs(
+                                attr("type", "text"),
+                                attr("name", "login"),
+                                placeholder("toto@example.com"),
+                                required()))),
+                    label(attrs(attr("for", "password : "))),
+                    input(
+                        attrs(
+                            type("password"),
+                            name("password"),
+                            attr("required", null))),
+                    button("Submit")),
+                script(
+                    attrs(
+                        attr("src", "https://h5z.io/script.js"))))).toString();
     }
 }

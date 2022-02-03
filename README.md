@@ -37,7 +37,7 @@ html5(
                         attr("name", "login"),
                         placeholder("toto@example.com"),
                         required()))),
-            label(attrs(attr("for", "password : "))),
+            label(attrs(attr("for", "password")), "password"),
             input(
                 attrs(
                     type("password"),
@@ -47,3 +47,20 @@ html5(
             attrs(
                 attr("src", "https://h5z.io/script.js"))))).toString();
 ```
+
+| Element       |  Implemented ?    |
+|---------------|-------------------|
+| <form>        |         ✅         |
+| <input>       |         ✅         |
+| <button>      |         ✅         |
+| <datalist>    |                   |
+| <fieldset>    |                   |
+| <label>       |         ✅         |
+| <legend>      |                   |
+| <meter>       |                   |
+| <optgroup>    |                   |
+| <option>      |                   |
+| <output>      |                   |
+| <progress>    |                   |
+| <select>      |                   |
+| <textarea>    |                   |
