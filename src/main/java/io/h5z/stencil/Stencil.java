@@ -543,27 +543,27 @@ public final class Stencil {
     }
 
     public static Element button(Map<String, String> attrs, Element... es) {
-        return form(attrs, Arrays.asList(es));
+        return button(attrs, Arrays.asList(es));
     }
 
     public static Element button(Map<String, String> attrs, List<Element> es) {
-        return new Form(attrs, es);
+        return new Button(attrs, es);
     }
 
     public static Element button(Element... es) {
-        return form(Collections.emptyMap(), Arrays.asList(es));
+        return button(Collections.emptyMap(), Arrays.asList(es));
     }
 
     public static Element button(List<Element> es) {
-        return form(Collections.emptyMap(), es);
+        return button(Collections.emptyMap(), es);
     }
 
     public static Element button(Map<String, String> attrs, String content) {
-        return form(attrs, Arrays.asList(__(content)));
+        return button(attrs, Arrays.asList(__(content)));
     }
 
     public static Element button(String content) {
-        return form(Collections.emptyMap(), Arrays.asList(__(content)));
+        return button(Collections.emptyMap(), Arrays.asList(__(content)));
     }
 
     /**
