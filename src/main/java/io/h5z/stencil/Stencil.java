@@ -2,6 +2,7 @@ package io.h5z.stencil;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -564,6 +565,52 @@ public final class Stencil {
         return form(Collections.emptyMap(), Arrays.asList(__(content)));
     }
 
+    /**
+     * @see <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select">The HTML Select element</a>
+     */
+    public static class Select extends HTMLElement {
+
+        public Select(Map<String, String> attributes, List<? extends Element> nodes) {
+            super("select", attributes, nodes);
+        }
+
+    }
+
+    public static Element select(Map<String, String> attrs, List<Element> es) {
+        return new Select(attrs, es);
+    }
+
+    public static Element select(Map<String, String> attrs, Element... es) {
+        return select(attrs, Arrays.asList(es));
+    }
+
+    public static Element select(List<Element> es) {
+        return select(Collections.emptyMap(), es);
+    }
+
+    public static Element select(Element... es) {
+        return select(Collections.emptyMap(), Arrays.asList(es));
+    }
+
+    /**
+     * @see <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/option">The HTML Option element</a>
+     */
+    public static class Option extends HTMLElement {
+
+        public Option(Map<String, String> attributes, List<? extends Element> nodes) {
+            super("option", attributes, nodes);
+        }
+
+    }
+
+    public static Element option(Map<String, String> attrs, String content) {
+        return new Option(attrs, Arrays.asList(__(content)));
+    }
+
+    public static Element option(String content) {
+        return option(Collections.emptyMap(), content);
+    }
+
     // ----------------------------------------------------------------------------------
     // Attribute static factories
     // ----------------------------------------------------------------------------------
@@ -575,7 +622,7 @@ public final class Stencil {
 
     public static Map<String, String> attrs(List<Entry<String, String>> attrs) {
         return attrs.stream()
-            .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+            .collect(HashMap::new, (m,v)->m.put(v.getKey(), v.getValue()), HashMap::putAll);
     }
 
     public static Entry<String, String> id(String id) {
@@ -590,7 +637,7 @@ public final class Stencil {
         return attr(
             "class",
             classes.stream() 
-                .reduce("", (a, b) -> String.format("%s `%s", a, b))); 
+                .reduce("", (a, b) -> String.format("%s %s", a, b))); 
     }
 
     public static Entry<String, String> type(String type) {
@@ -623,6 +670,10 @@ public final class Stencil {
 
     public static Entry<String, String> _for(String _for) {
         return attr("for", _for);
+    }
+
+    public static Entry<String, String> selected() {
+        return attr("selected", null);
     }
 
     // ----------------------------------------------------------------------------------
@@ -663,48 +714,62 @@ public final class Stencil {
     }
 
     public static void main(String[] args) {
-        html5(
-            head(
-                meta(attr("charset", "utf8")),
-                meta(attr("property", "og:image"),
-                    attr("content", "https://developer.mozilla.org/static/img/opengraph-logo.png")),
-                title("hello, world"),
-                link(attr("rel", "icon"),
-                    attr("href", "favicon.icon"),
-                    attr("type", "image/x-icon"))),
-            body(
-                h1(attrs(id("main-tite"), classes("h1")), "This is a title h1"),
-                h2("This is a title h2"),
-                h3("This is a title h3"),
-                h4("This is a title h4"),
-                h5("This is a title h5"),
-                h6("This is a title h6"),
-                div(
-                    attrs(
-                        id("super"),
-                        classes("class", "my-class")),
-                    p("hello, world")),
-                form(
-                    attrs(
-                        attr("method", "POST"),
-                        action("/authenticate")),
-                    label(
-                        __("Login :"),
+        String page = 
+            html5(
+                head(
+                    meta(attr("charset", "utf8")),
+                    meta(attr("property", "og:image"),
+                        attr("content", "https://developer.mozilla.org/static/img/opengraph-logo.png")),
+                    title("hello, world"),
+                    link(attr("rel", "icon"),
+                        attr("href", "favicon.icon"),
+                        attr("type", "image/x-icon"))),
+                body(
+                    h1(attrs(id("main-tite"), classes("big-title")), "This is a title h1"),
+                    h2("This is a title h2"),
+                    h3("This is a title h3"),
+                    h4("This is a title h4"),
+                    h5("This is a title h5"),
+                    h6("This is a title h6"),
+                    div(
+                        attrs(
+                            id("super"),
+                            classes("class", "my-class")),
+                        p("hello, world")),
+                    form(
+                        attrs(
+                            attr("method", "POST"),
+                            action("/authenticate")),
+                        label(
+                            __("Login :"),
+                            input(
+                                attrs(
+                                    attr("type", "text"),
+                                    attr("name", "login"),
+                                    placeholder("toto@example.com"),
+                                    required()))),
+                        label(attrs(attr("for", "password : "))),
                         input(
                             attrs(
-                                attr("type", "text"),
-                                attr("name", "login"),
-                                placeholder("toto@example.com"),
-                                required()))),
-                    label(attrs(attr("for", "password : "))),
-                    input(
+                                type("password"),
+                                name("password"),
+                                attr("required", null))),
+                        select(
+                            attrs(
+                                name("role")),
+                            option(
+                                attrs(
+                                    value("USER"),
+                                    selected()),
+                                    "User"),
+                            option(
+                                attrs(
+                                    value("ADMIN")),
+                                    "Admin")),
+                        button("Submit")),
+                    script(
                         attrs(
-                            type("password"),
-                            name("password"),
-                            attr("required", null))),
-                    button("Submit")),
-                script(
-                    attrs(
-                        attr("src", "https://h5z.io/script.js"))))).toString();
+                            attr("src", "https://h5z.io/script.js"))))).toString();
+        System.out.println(page);
     }
 }

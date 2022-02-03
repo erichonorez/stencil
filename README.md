@@ -60,7 +60,7 @@ html5(
 | <meter>       |                   |
 | <optgroup>    |                   |
 | <option>      |                   |
-| <output>      |                   |
+| <output>      |         ✅         |
 | <progress>    |                   |
-| <select>      |                   |
+| <select>      |         ✅         |
 | <textarea>    |                   |
