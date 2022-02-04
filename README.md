@@ -63,19 +63,57 @@ html5(
                 attr("src", "https://h5z.io/script.js"))))).toString();
 ```
 
+## Form elements
+
 | Element       |  Implemented ?    |
 |---------------|-------------------|
-| <form>        |         ✅         |
-| <input>       |         ✅         |
-| <button>      |         ✅         |
-| <datalist>    |                   |
-| <fieldset>    |                   |
-| <label>       |         ✅         |
-| <legend>      |                   |
-| <meter>       |                   |
-| <optgroup>    |                   |
-| <option>      |                   |
-| <output>      |         ✅         |
-| <progress>    |                   |
-| <select>      |         ✅         |
-| <textarea>    |         ✅         |
+| `<form>`        |         ✅         |
+| `<input>`       |         ✅         |
+| `<button>`      |         ✅         |
+| `<datalist>`    |                   |
+| `<fieldset>`    |                   |
+| `<label>`       |         ✅         |
+| `<legend>`      |                   |
+| `<meter>`       |                   |
+| `<optgroup>`    |                   |
+| `<option>`      |                   |
+| `<output>`      |         ✅         |
+| `<progress>`    |                   |
+| `<select>`      |         ✅         |
+| `<textarea>`    |         ✅         |
+
+## Table elements
+
+Example : 
+
+```java
+Element table = 
+
+    table(
+        thead(
+            tr(
+                th("First name"), 
+                th("Last name"))),
+        tbody(
+            tr(
+                td("John"), 
+                td("Doe")),
+            tr(
+                td("Jane"), 
+                td("Doe"))));
+
+table.toString(); // <table><thead><tr><th>First name</th> ... </table>
+```
+
+| Element       |  Implemented ?    |
+|---------------|-------------------|
+| `<table>`        |         ✅         |
+| `<thead>`       |         ✅         |
+| `<tr>`      |         ✅         |
+| `<th>`    |            ✅        |
+| `<tbody>`    |         ✅           |
+| `<td>`       |         ✅         |
+| `<tfoot>`      |                   |
+| `<caption>`       |                   |
+| `<col>`    |                   |
+| `<colgroup>`      |                   |

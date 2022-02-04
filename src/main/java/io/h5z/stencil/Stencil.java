@@ -632,6 +632,190 @@ public final class Stencil {
     }
 
     // ----------------------------------------------------------------------------------
+    // Table elements
+    // ----------------------------------------------------------------------------------
+
+    /**
+     * <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/table">The Table element</a>
+     */
+    public static class Table extends HTMLElement {
+
+        public Table(Map<String, String> attributes, List<? extends Element> nodes) {
+            super("table", attributes, nodes);
+        }
+
+    }
+
+    public static Element table(Map<String, String> attrs, List<Element> es) {
+        return new Table(attrs, es);
+    }
+
+    public static Element table(Map<String, String> attrs, Element... es) {
+        return table(attrs, Arrays.asList(es));
+    }
+
+    public static Element table(List<Element> es) {
+        return table(Collections.emptyMap(), es);
+    }
+
+    public static Element table(Element... es) {
+        return table(Arrays.asList(es));
+    }
+
+    /**
+     * <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/thead">The Table Head element</a>
+     */
+    public static class THead extends HTMLElement {
+
+        public THead(Map<String, String> attributes, List<? extends Element> nodes) {
+            super("thead", attributes, nodes);
+        }
+
+    }
+
+    public static Element thead(Map<String, String> attrs, List<Element> es) {
+        return new THead(attrs, es);
+    }
+
+    public static Element thead(Map<String, String> attrs, Element... es) {
+        return thead(attrs, Arrays.asList(es));
+    }
+
+    public static Element thead(List<Element> es) {
+        return thead(Collections.emptyMap(), es);
+    }
+
+    public static Element thead(Element... es) {
+        return thead(Arrays.asList(es));
+    }
+
+    /**
+     * <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/tbody">The Table Body element</a>
+     */
+    public static class TBody extends HTMLElement {
+
+        public TBody(Map<String, String> attributes, List<? extends Element> nodes) {
+            super("tbody", attributes, nodes);
+        }
+
+    }
+
+    public static Element tbody(Map<String, String> attrs, List<Element> es) {
+        return new TBody(attrs, es);
+    }
+
+    public static Element tbody(Map<String, String> attrs, Element... es) {
+        return tbody(attrs, Arrays.asList(es));
+    }
+
+    public static Element tbody(List<Element> es) {
+        return tbody(Collections.emptyMap(), es);
+    }
+
+    public static Element tbody(Element... es) {
+        return tbody(Arrays.asList(es));
+    }
+
+
+    /**
+     * <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/tr">The Table Row element</a>
+     */
+    public static class TR extends HTMLElement {
+
+        public TR(Map<String, String> attributes, List<? extends Element> nodes) {
+            super("tr", attributes, nodes);
+        }
+
+    }
+
+    public static Element tr(Map<String, String> attrs, List<Element> es) {
+        return new TR(attrs, es);
+    }
+
+    public static Element tr(Map<String, String> attrs, Element... es) {
+        return tr(attrs, Arrays.asList(es));
+    }
+
+    public static Element tr(List<Element> es) {
+        return tr(Collections.emptyMap(), es);
+    }
+
+    public static Element tr(Element... es) {
+        return tr(Arrays.asList(es));
+    }
+
+    /**
+     * <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/th">The Table Header element</a>
+     */
+    public static class TH extends HTMLElement {
+
+        public TH(Map<String, String> attributes, List<? extends Element> nodes) {
+            super("th", attributes, nodes);
+        }
+
+    }
+
+    public static Element th(Map<String, String> attrs, List<Element> es) {
+        return new TH(attrs, es);
+    }
+
+    public static Element th(Map<String, String> attrs, Element... es) {
+        return th(attrs, Arrays.asList(es));
+    }
+
+    public static Element th(List<Element> es) {
+        return th(Collections.emptyMap(), es);
+    }
+
+    public static Element th(Element... es) {
+        return th(Arrays.asList(es));
+    }
+
+    public static Element th(Map<String, String> attrs, String content) {
+        return th(attrs, Arrays.asList(__(content)));
+    }
+
+    public static Element th(String content) {
+        return th(Collections.emptyMap(), content);
+    }
+
+    /**
+     * <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/td">The Table Data Cell element</a>
+     */
+    public static class TD extends HTMLElement {
+
+        public TD(Map<String, String> attributes, List<? extends Element> nodes) {
+            super("td", attributes, nodes);
+        }
+
+    }
+
+    public static Element td(Map<String, String> attrs, List<Element> es) {
+        return new TD(attrs, es);
+    }
+
+    public static Element td(Map<String, String> attrs, Element... es) {
+        return td(attrs, Arrays.asList(es));
+    }
+
+    public static Element td(List<Element> es) {
+        return td(Collections.emptyMap(), es);
+    }
+
+    public static Element td(Element... es) {
+        return td(Collections.emptyMap(), es);
+    }
+
+    public static Element td(Map<String, String> attrs, String content) {
+        return td(attrs, Arrays.asList(__(content)));
+    }
+
+    public static Element td(String content) {
+        return td(Collections.emptyMap(), content);
+    }
+
+
+    // ----------------------------------------------------------------------------------
     // Attribute static factories
     // ----------------------------------------------------------------------------------
 
@@ -814,5 +998,22 @@ public final class Stencil {
                             attr("src", "https://h5z.io/script.js"))))).toString();
         // System.out.println(page);
         System.out.println(button(attrs(type("submit")), "Submit").toString());
+
+        Element table = 
+        
+            table(
+                thead(
+                    tr(
+                        th("First name"), 
+                        th("Last name"))),
+                tbody(
+                    tr(
+                        td("John"), 
+                        td("Doe")),
+                    tr(
+                        td("Jane"), 
+                        td("Doe"))));
+
+        table.toString(); // <table><thead><tr><th>First name</th> ... </table>
     }
 }
