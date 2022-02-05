@@ -219,194 +219,264 @@ public final class Stencil {
         return body(Collections.emptyMap(), elems);
     }
 
-    public static class H1 extends HTMLElement {
+    // ----------------------------------------------------------------------------------
+    // Content sectionning elements
+    // ----------------------------------------------------------------------------------
 
-        public H1(Map<String, String> attributes, List<? extends Element> nodes) {
-            super("h1", attributes, nodes);
-        }
-
+    public static HTMLElement section(Map<String, String> attrs, List<Element> es) {
+        return new HTMLElement("section", Collections.emptyMap(), es);
+    }
+    
+    public static Element section(Map<String, String> attrs, Element... es) {
+        return section(attrs, Arrays.asList(es));
+    }
+    
+    public static Element section(List<Element> es) {
+        return section(Collections.emptyMap(), es);
+    }
+    
+    public static Element section(Element... es) {
+        return section(Collections.emptyMap(), Arrays.asList(es));
     }
 
-    public static Element h1(Map<String, String> attrs, Element... elems) {
-        return new H1(attrs, Arrays.asList(elems));
+    public static HTMLElement aside(Map<String, String> attrs, List<Element> es) {
+        return new HTMLElement("aside", Collections.emptyMap(), es);
+    }
+    
+    public static Element aside(Map<String, String> attrs, Element... es) {
+        return aside(attrs, Arrays.asList(es));
+    }
+    
+    public static Element aside(List<Element> es) {
+        return aside(Collections.emptyMap(), es);
+    }
+    
+    public static Element aside(Element... es) {
+        return aside(Collections.emptyMap(), Arrays.asList(es));
+    }
+
+    public static HTMLElement footer(Map<String, String> attrs, List<Element> es) {
+        return new HTMLElement("aside", Collections.emptyMap(), es);
+    }
+    
+    public static Element footer(Map<String, String> attrs, Element... es) {
+        return footer(attrs, Arrays.asList(es));
+    }
+    
+    public static Element footer(List<Element> es) {
+        return footer(Collections.emptyMap(), es);
+    }
+    
+    public static Element footer(Element... es) {
+        return footer(Collections.emptyMap(), Arrays.asList(es));
+    }
+
+    public static HTMLElement header(Map<String, String> attrs, List<Element> es) {
+        return new HTMLElement("header", Collections.emptyMap(), es);
+    }
+    
+    public static Element header(Map<String, String> attrs, Element... es) {
+        return header(attrs, Arrays.asList(es));
+    }
+    
+    public static Element header(List<Element> es) {
+        return header(Collections.emptyMap(), es);
+    }
+    
+    public static Element header(Element... es) {
+        return header(Collections.emptyMap(), Arrays.asList(es));
+    }
+
+    public static HTMLElement main(Map<String, String> attrs, List<Element> es) {
+        return new HTMLElement("main", Collections.emptyMap(), es);
+    }
+    
+    public static Element main(Map<String, String> attrs, Element... es) {
+        return main(attrs, Arrays.asList(es));
+    }
+    
+    public static Element main(List<Element> es) {
+        return main(Collections.emptyMap(), es);
+    }
+    
+    public static Element main(Element... es) {
+        return main(Collections.emptyMap(), Arrays.asList(es));
+    }
+
+    public static HTMLElement nav(Map<String, String> attrs, List<Element> es) {
+        return new HTMLElement("nav", Collections.emptyMap(), es);
+    }
+    
+    public static Element nav(Map<String, String> attrs, Element... es) {
+        return nav(attrs, Arrays.asList(es));
+    }
+    
+    public static Element nav(List<Element> es) {
+        return nav(Collections.emptyMap(), es);
+    }
+    
+    public static Element nav(Element... es) {
+        return nav(Collections.emptyMap(), Arrays.asList(es));
+    }
+
+    public static HTMLElement article(Map<String, String> attrs, List<Element> es) {
+        return new HTMLElement("article", Collections.emptyMap(), es);
+    }
+    
+    public static Element article(Map<String, String> attrs, Element... es) {
+        return article(attrs, Arrays.asList(es));
+    }
+    
+    public static Element article(List<Element> es) {
+        return article(Collections.emptyMap(), es);
+    }
+    
+    public static Element article(Element... es) {
+        return article(Collections.emptyMap(), Arrays.asList(es));
+    }
+
+    public static HTMLElement h1(Map<String, String> attrs, List<Element> es) {
+        return new HTMLElement("h1", Collections.emptyMap(), es);
+    }
+
+    public static Element h1(Map<String, String> attrs, Element... es) {
+        return h1(attrs, Arrays.asList(es));
+    }
+
+    public static Element h1(List<Element> es) {
+        return h1(Collections.emptyMap(), es);
+    }
+
+    public static Element h1(Element... es) {
+        return h1(Collections.emptyMap(), Arrays.asList(es));
+    }
+
+    public static Element h1(Map<String, String> attrs, String content) {
+        return h1(attrs, __(content));
     }
 
     public static Element h1(String content) {
         return h1(__(content));
     }
 
-    public static Element h1(Map<String, String> attrs, String content) {
-        return h1(attrs, __(content));    
+    public static HTMLElement h2(Map<String, String> attrs, List<Element> es) {
+        return new HTMLElement("h2", Collections.emptyMap(), es);
     }
 
-    public static Element h1(Element... elems) {
-        return h1(Collections.emptyMap(), elems);
+    public static Element h2(Map<String, String> attrs, Element... es) {
+        return h2(attrs, Arrays.asList(es));
     }
 
-    public static class H2 extends HTMLElement {
-
-        public H2(Map<String, String> attributes, List<? extends Element> nodes) {
-            super("h2", attributes, nodes);
-        }
-
+    public static Element h2(List<Element> es) {
+        return h2(Collections.emptyMap(), es);
     }
 
-    public static Element h2(Map<String, String> attrs, Element... elems) {
-        return new H2(attrs, Arrays.asList(elems));
+    public static Element h2(Element... es) {
+        return h2(Collections.emptyMap(), Arrays.asList(es));
     }
 
-    public static Element h2(Element... elems) {
-        return h2(Collections.emptyMap(), elems);
+    public static Element h2(Map<String, String> attrs, String content) {
+        return h2(attrs, __(content));
     }
 
     public static Element h2(String content) {
         return h2(__(content));
     }
 
-    public static Element h2(Map<String, String> attrs, String content) {
-        return h2(attrs, __(content));    
+    public static HTMLElement h3(Map<String, String> attrs, List<Element> es) {
+        return new HTMLElement("h3", Collections.emptyMap(), es);
     }
 
-    public static class H3 extends HTMLElement {
-
-        public H3(Map<String, String> attributes, List<? extends Element> nodes) {
-            super("h3", attributes, nodes);
-        }
-
+    public static Element h3(Map<String, String> attrs, Element... es) {
+        return h3(attrs, Arrays.asList(es));
     }
 
-    public static Element h3(Map<String, String> attrs, Element... elems) {
-        return new H3(attrs, Arrays.asList(elems));
+    public static Element h3(List<Element> es) {
+        return h3(Collections.emptyMap(), es);
     }
 
-    public static Element h3(Element... elems) {
-        return h3(Collections.emptyMap(), elems);
+    public static Element h3(Element... es) {
+        return h3(Collections.emptyMap(), Arrays.asList(es));
+    }
+
+    public static Element h3(Map<String, String> attrs, String content) {
+        return h3(attrs, __(content));
     }
 
     public static Element h3(String content) {
         return h3(__(content));
     }
 
-    public static Element h3(Map<String, String> attrs, String content) {
-        return h3(attrs, __(content));    
+    public static HTMLElement h4(Map<String, String> attrs, List<Element> es) {
+        return new HTMLElement("h4", Collections.emptyMap(), es);
     }
-
-    public static class H4 extends HTMLElement {
-
-        public H4(Map<String, String> attributes, List<? extends Element> nodes) {
-            super("h4", attributes, nodes);
-        }
-
+    
+    public static Element h4(Map<String, String> attrs, Element... es) {
+        return h4(attrs, Arrays.asList(es));
     }
-
-    public static Element h4(Map<String, String> attrs, Element... elems) {
-        return new H4(attrs, Arrays.asList(elems));
+    
+    public static Element h4(List<Element> es) {
+        return h4(Collections.emptyMap(), es);
     }
-
-    public static Element h4(Element... elems) {
-        return h4(Collections.emptyMap(), elems);
+    
+    public static Element h4(Element... es) {
+        return h4(Collections.emptyMap(), Arrays.asList(es));
     }
-
+    
+    public static Element h4(Map<String, String> attrs, String content) {
+        return h4(attrs, __(content));
+    }
+    
     public static Element h4(String content) {
         return h4(__(content));
     }
 
-    public static Element h4(Map<String, String> attrs, String content) {
-        return h4(attrs, __(content));    
+    public static HTMLElement h5(Map<String, String> attrs, List<Element> es) {
+        return new HTMLElement("h5", Collections.emptyMap(), es);
     }
-
-    public static class H5 extends HTMLElement {
-
-        public H5(Map<String, String> attributes, List<? extends Element> nodes) {
-            super("h5", attributes, nodes);
-        }
-
+    
+    public static Element h5(Map<String, String> attrs, Element... es) {
+        return h5(attrs, Arrays.asList(es));
     }
-
-    public static Element h5(Map<String, String> attrs, Element... elems) {
-        return new H5(attrs, Arrays.asList(elems));
+    
+    public static Element h5(List<Element> es) {
+        return h5(Collections.emptyMap(), es);
     }
-
-    public static Element h5(Element... elems) {
-        return h5(Collections.emptyMap(), elems);
+    
+    public static Element h5(Element... es) {
+        return h5(Collections.emptyMap(), Arrays.asList(es));
     }
-
+    
+    public static Element h5(Map<String, String> attrs, String content) {
+        return h5(attrs, __(content));
+    }
+    
     public static Element h5(String content) {
         return h5(__(content));
     }
 
-    public static Element h5(Map<String, String> attrs, String content) {
-        return h5(attrs, __(content));    
+    public static HTMLElement h6(Map<String, String> attrs, List<Element> es) {
+        return new HTMLElement("h6", Collections.emptyMap(), es);
     }
-
-    public static class H6 extends HTMLElement {
-
-        public H6(Map<String, String> attributes, List<? extends Element> nodes) {
-            super("h6", attributes, nodes);
-        }
-
+    
+    public static Element h6(Map<String, String> attrs, Element... es) {
+        return h6(attrs, Arrays.asList(es));
     }
-
-    public static Element h6(Map<String, String> attrs, Element... elems) {
-        return new H6(attrs, Arrays.asList(elems));
+    
+    public static Element h6(List<Element> es) {
+        return h6(Collections.emptyMap(), es);
     }
-
-    public static Element h6(Element... elems) {
-        return h6(Collections.emptyMap(), elems);
+    
+    public static Element h6(Element... es) {
+        return h6(Collections.emptyMap(), Arrays.asList(es));
     }
-
+    
+    public static Element h6(Map<String, String> attrs, String content) {
+        return h6(attrs, __(content));
+    }
+    
     public static Element h6(String content) {
         return h6(__(content));
-    }
-
-    public static Element h6(Map<String, String> attrs, String content) {
-        return h6(attrs, __(content));    
-    }
-
-    public static class Span extends HTMLElement {
-
-        public Span(Map<String, String> attributes, List<Text> nodes) {
-            super("span", attributes, nodes);
-        }
-
-    }
-
-    public static class Text implements Element {
-
-        private final String content;
-
-        public Text(String content) {
-            this.content = content;
-        }
-
-        @Override
-        public String toString() {
-            return escapeHTML(this.content);
-        }
-
-    }
-
-    public static Element __(String content) {
-        return new Text(content);
-    }
-
-    public static class UnsafeText implements Element {
-
-        private final String content;
-
-        public UnsafeText(String content) {
-            this.content = content;
-        }
-
-        @Override
-        public String toString() {
-            return this.content;
-        }
-
-    }
-
-    public static Element __u(String content) {
-        return new UnsafeText(content);
     }
 
     // ----------------------------------------------------------------------------------
@@ -959,6 +1029,73 @@ public final class Stencil {
         return td(Collections.emptyMap(), content);
     }
 
+    // ----------------------------------------------------------------------------------
+    // Inline HTML elements
+    // ----------------------------------------------------------------------------------
+
+
+    public static HTMLElement span(Map<String, String> attrs, List<Element> es) {
+        return new HTMLElement("span", Collections.emptyMap(), es);
+    }
+    
+    public static Element span(Map<String, String> attrs, Element... es) {
+        return span(attrs, Arrays.asList(es));
+    }
+    
+    public static Element span(List<Element> es) {
+        return span(Collections.emptyMap(), es);
+    }
+    
+    public static Element span(Element... es) {
+        return span(Collections.emptyMap(), Arrays.asList(es));
+    }
+    
+    public static Element span(Map<String, String> attrs, String content) {
+        return span(attrs, __(content));
+    }
+    
+    public static Element span(String content) {
+        return span(__(content));
+    }
+
+    public static class Text implements Element {
+
+        private final String content;
+
+        public Text(String content) {
+            this.content = content;
+        }
+
+        @Override
+        public String toString() {
+            return escapeHTML(this.content);
+        }
+
+    }
+
+    public static Element __(String content) {
+        return new Text(content);
+    }
+
+    public static class UnsafeText implements Element {
+
+        private final String content;
+
+        public UnsafeText(String content) {
+            this.content = content;
+        }
+
+        @Override
+        public String toString() {
+            return this.content;
+        }
+
+    }
+
+    public static Element __u(String content) {
+        return new UnsafeText(content);
+    }
+
 
     // ----------------------------------------------------------------------------------
     // Attribute static factories
@@ -1176,5 +1313,33 @@ public final class Stencil {
                     dd("Domain Specific Language")));
         
         div.toString(); // <div><p>this is a paragraph</p><ul><li>list item</li>... </div>
+
+        Element sectioning =
+
+            main(
+                header(
+                    h1("title 1"),
+                    h2("title 2"),
+                    h3("title 3"),
+                    h4("title 4"),
+                    h5("title 5"),
+                    h6("title 6")),
+                nav(
+                    ol(
+                        li("a"),
+                        li("b"),
+                        li("c"))),
+                aside(
+                    ul(
+                        li("suggestion 1"),
+                        li("suggestion 2"))),
+                section(
+                    article(
+                        p("an article"))),
+                footer(
+                    p("a footer")));
+        
+        sectioning.toString();
+                
     }
 }

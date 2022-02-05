@@ -63,7 +63,92 @@ html5(
                 attr("src", "https://h5z.io/script.js"))))).toString();
 ```
 
+## Body sectioning elements
+
+Example : 
+
+```java
+Element section =
+
+    main(
+        header(
+            h1("title 1"),
+            h2("title 2"),
+            h3("title 3"),
+            h4("title 4"),
+            h5("title 5"),
+            h6("title 6")),
+        nav(
+            ol(
+                li("a"),
+                li("b"),
+                li("c"))),
+        aside(
+            ul(
+                li("suggestion 1"),
+                li("suggestion 2"))),
+        section(
+            article(
+                p("an article"))),
+        footer(
+            p("a footer")));
+        
+section.toString();
+```
+| Element       |  Implemented ?    |
+|---------------|-------------------|
+| `<main>`        |         ✅         |
+| `<section>`       |         ✅         |
+| `<nav>`      |         ✅         |
+| `<header>`    |            ✅        |
+| `<footer>`    |         ✅           |
+| `<article>`    |         ✅           |
+| `<aside>`    |         ✅           |
+| `<h1>`,`<h2>`,`<h3>`,`<h4>`,`<h5>`,`<h6>`    |         ✅           |
+
 ## Form elements
+
+Example :
+
+```java
+Element form =
+
+    form(
+        attrs(
+            attr("method", "POST"),
+            action("/authenticate")),
+        label(
+            __("Login :"),
+            input(
+                attrs(
+                    attr("type", "text"),
+                    attr("name", "login"),
+                    placeholder("toto@example.com"),
+                    required()))),
+        label(attrs(attr("for", "password : "))),
+        input(
+            attrs(
+                type("password"),
+                name("password"),
+                required())),
+        select(
+            attrs(
+                name("role")),
+            option(
+                attrs(
+                    value("USER"),
+                    selected()),
+                    "User"),
+            option(
+                attrs(
+                    value("ADMIN")),
+                    "Admin")),
+        textarea(attrs(id("description"), name("description")),
+            "this is a content"),
+        button("Submit"));
+
+form.toString();
+```
 
 | Element       |  Implemented ?    |
 |---------------|-------------------|
