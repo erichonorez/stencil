@@ -117,3 +117,36 @@ table.toString(); // <table><thead><tr><th>First name</th> ... </table>
 | `<caption>`       |                   |
 | `<col>`    |                   |
 | `<colgroup>`      |                   |
+
+## Text elements
+
+Example:
+
+```java
+Element div =
+        
+    div(
+        p("this is a paragraph"),
+        ul(
+            li("list item"),
+            li("list item")),
+        ol(
+            li("list item"),
+            li("list item")),
+        dl(
+            dt("DSL"),
+            dd("Domain Specific Language")));
+        
+div.toString(); // <div><p>this is a paragraph</p><ul><li>list item</li>... </div>
+```
+
+| Element       |  Implemented ?    |
+|---------------|-------------------|
+| `<div>`        |         ✅         |
+| `<p>`       |         ✅         |
+| `<ul>`      |         ✅         |
+| `<ol>`    |            ✅        |
+| `<li>`    |         ✅           |
+| `<dl>`    |         ✅           |
+| `<dt>`    |         ✅           |
+| `<dd>`    |         ✅           |

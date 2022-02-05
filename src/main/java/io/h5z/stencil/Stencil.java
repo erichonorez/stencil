@@ -363,14 +363,6 @@ public final class Stencil {
         return h6(attrs, __(content));    
     }
 
-    public static class P extends HTMLElement {
-
-        public P(Map<String, String> attributes, List<Element> nodes) {
-            super("p", attributes, nodes);
-        }
-
-    }
-
     public static class Span extends HTMLElement {
 
         public Span(Map<String, String> attributes, List<Text> nodes) {
@@ -417,16 +409,169 @@ public final class Stencil {
         return new UnsafeText(content);
     }
 
-    public static HTMLElement div(Element... nodes) {
-        return new HTMLElement("div", Collections.emptyMap(), Arrays.asList(nodes));
+    // ----------------------------------------------------------------------------------
+    // Text elements
+    // ----------------------------------------------------------------------------------
+
+
+    public static HTMLElement div(Map<String, String> attrs, List<Element> es) {
+        return new HTMLElement("div", Collections.emptyMap(), es);
     }
 
-    public static HTMLElement div(Map<String, String> attributes, Element... nodes) {
-        return new HTMLElement("div", attributes, Arrays.asList(nodes));
+    public static Element div(Map<String, String> attrs, Element... es) {
+        return div(attrs, Arrays.asList(es));
+    }
+
+    public static Element div(List<Element> es) {
+        return div(Collections.emptyMap(), es);
+    }
+
+    public static Element div(Element... es) {
+        return div(Collections.emptyMap(), Arrays.asList(es));
+    }
+
+    public static HTMLElement p(Map<String, String> attrs, List<Element> es) {
+        return new HTMLElement("p", Collections.emptyMap(), es);
+    }
+
+    public static HTMLElement p(Map<String, String> attrs, Element... es) {
+        return p(attrs, Arrays.asList(es));
+    }
+
+    public static HTMLElement p(List<Element> es) {
+        return p(Collections.emptyMap(), es);
+    }
+
+    public static HTMLElement p(Element... es) {
+        return p(Collections.emptyMap(), Arrays.asList(es));
+    }
+
+    public static HTMLElement p(Map<String, String> attrs, String content) {
+        return p(attrs, __(content));
     }
 
     public static HTMLElement p(String content) {
-        return new P(Collections.emptyMap(), Arrays.asList(new Text(content)));
+        return p(__(content));
+    }
+
+    public static HTMLElement ul(Map<String, String> attrs, List<Element> es) {
+        return new HTMLElement("ul", Collections.emptyMap(), es);
+    }
+
+    public static Element ul(Map<String, String> attrs, Element... es) {
+        return ul(attrs, Arrays.asList(es));
+    }
+
+    public static Element ul(List<Element> es) {
+        return ul(Collections.emptyMap(), es);
+    }
+
+    public static Element ul(Element... es) {
+        return ul(Collections.emptyMap(), Arrays.asList(es));
+    }
+
+    public static HTMLElement li(Map<String, String> attrs, List<Element> es) {
+        return new HTMLElement("li", Collections.emptyMap(), es);
+    }
+
+    public static Element li(Map<String, String> attrs, Element... es) {
+        return li(attrs, Arrays.asList(es));
+    }
+
+    public static Element li(List<Element> es) {
+        return li(Collections.emptyMap(), es);
+    }
+
+    public static Element li(Element... es) {
+        return li(Collections.emptyMap(), Arrays.asList(es));
+    }
+
+    public static Element li(Map<String, String> attrs, String content) {
+        return li(attrs, __(content));
+    }
+
+    public static Element li(String content) {
+        return li(__(content));
+    }
+
+    public static HTMLElement ol(Map<String, String> attrs, List<Element> es) {
+        return new HTMLElement("ol", Collections.emptyMap(), es);
+    }
+
+    public static Element ol(Map<String, String> attrs, Element... es) {
+        return ol(attrs, Arrays.asList(es));
+    }
+
+    public static Element ol(List<Element> es) {
+        return ol(Collections.emptyMap(), es);
+    }
+
+    public static Element ol(Element... es) {
+        return ol(Collections.emptyMap(), Arrays.asList(es));
+    }
+
+    public static HTMLElement dl(Map<String, String> attrs, List<Element> es) {
+        return new HTMLElement("dl", Collections.emptyMap(), es);
+    }
+
+    public static Element dl(Map<String, String> attrs, Element... es) {
+        return dl(attrs, Arrays.asList(es));
+    }
+
+    public static Element dl(List<Element> es) {
+        return dl(Collections.emptyMap(), es);
+    }
+
+    public static Element dl(Element... es) {
+        return dl(Collections.emptyMap(), Arrays.asList(es));
+    }
+
+    public static HTMLElement dt(Map<String, String> attrs, List<Element> es) {
+        return new HTMLElement("dt", Collections.emptyMap(), es);
+    }
+
+    public static Element dt(Map<String, String> attrs, Element... es) {
+        return dt(attrs, Arrays.asList(es));
+    }
+
+    public static Element dt(List<Element> es) {
+        return dt(Collections.emptyMap(), es);
+    }
+
+    public static Element dt(Element... es) {
+        return dt(Collections.emptyMap(), Arrays.asList(es));
+    }
+
+    public static Element dt(Map<String, String> attrs, String content) {
+        return dt(attrs, __(content));
+    }
+
+    public static Element dt(String content) {
+        return dt(__(content));
+    }
+
+    public static HTMLElement dd(Map<String, String> attrs, List<Element> es) {
+        return new HTMLElement("dd", Collections.emptyMap(), es);
+    }
+
+    public static Element dd(Map<String, String> attrs, Element... es) {
+        return dd(attrs, Arrays.asList(es));
+    }
+
+    public static Element dd(List<Element> es) {
+        return dd(Collections.emptyMap(), es);
+    }
+
+    public static Element dd(Element... es) {
+        return dd(Collections.emptyMap(), Arrays.asList(es));
+    }
+
+    public static Element dd(Map<String, String> attrs, String content) {
+        return dd(attrs, __(content));
+    }
+
+    public static Element dd(String content) {
+        return dd(__(content));
     }
 
     // ----------------------------------------------------------------------------------
@@ -1000,7 +1145,7 @@ public final class Stencil {
         System.out.println(button(attrs(type("submit")), "Submit").toString());
 
         Element table = 
-        
+
             table(
                 thead(
                     tr(
@@ -1015,5 +1160,21 @@ public final class Stencil {
                         td("Doe"))));
 
         table.toString(); // <table><thead><tr><th>First name</th> ... </table>
+
+        Element div =
+        
+            div(
+                p("this is a paragraph"),
+                ul(
+                    li("list item"),
+                    li("list item")),
+                ol(
+                    li("list item"),
+                    li("list item")),
+                dl(
+                    dt("DSL"),
+                    dd("Domain Specific Language")));
+        
+        div.toString(); // <div><p>this is a paragraph</p><ul><li>list item</li>... </div>
     }
 }
