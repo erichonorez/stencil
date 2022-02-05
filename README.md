@@ -235,3 +235,37 @@ div.toString(); // <div><p>this is a paragraph</p><ul><li>list item</li>... </di
 | `<dl>`    |         ✅           |
 | `<dt>`    |         ✅           |
 | `<dd>`    |         ✅           |
+
+## Phrasing elements
+
+| Element       |  Implemented ?    |
+|---------------|-------------------|
+| `<a>`        |         ✅         |
+| `<span>`       |         ✅         |
+| `<i>`      |         ✅         |
+| `<abbr>`    |                    |
+| `<b>`    |                    |
+| `<bdi>`    |                    |
+| `<bdo>`    |                    |
+| `<br>`    |         ✅           |
+| `<cite>`    |                    |
+| `<code>`    |                    |
+| `<data>`    |                    |
+| `<defn>`    |                    |
+| `<em>`    |                    |
+| `<kbd>`    |                    |
+| `<mark>`    |                    |
+| `<q>`    |                   |
+| `<rp>`    |                    |
+| `<rt>`    |                    |
+| `<ruby>`    |                   |
+| `<samp>`    |                  |
+| `<small>`    |                    |
+| `<strong>`    |                   |
+| `<sub>`    |                    |
+| `<time>`    |                    |
+| `<u>`    |                    |
+| `<sup>`    |                    |
+| `<var>`    |                 |
+| `<wbr>`    |                   |
+

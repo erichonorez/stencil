@@ -1058,6 +1058,50 @@ public final class Stencil {
         return span(__(content));
     }
 
+    public static HTMLElement a(Map<String, String> attrs, Element e) {
+        return new HTMLElement("a", Collections.emptyMap(), Arrays.asList(e));
+    }
+    
+    public static Element a(Element e) {
+        return a(Collections.emptyMap(), e);
+    }
+    
+    public static Element a(Map<String, String> attrs, String content) {
+        return a(attrs, __(content));
+    }
+    
+    public static Element a(String content) {
+        return a(__(content));
+    }
+
+    public static HTMLElement i(Map<String, String> attrs, List<Element> es) {
+        return new HTMLElement("i", Collections.emptyMap(), es);
+    }
+    
+    public static Element i(Map<String, String> attrs, Element... es) {
+        return i(attrs, Arrays.asList(es));
+    }
+    
+    public static Element i(List<Element> es) {
+        return i(Collections.emptyMap(), es);
+    }
+    
+    public static Element i(Element... es) {
+        return i(Collections.emptyMap(), Arrays.asList(es));
+    }
+    
+    public static Element i(Map<String, String> attrs, String content) {
+        return span(attrs, __(content));
+    }
+    
+    public static Element i(String content) {
+        return span(__(content));
+    }
+
+    public static Element br(String content) {
+        return new HTMLElement("br", Collections.emptyMap(), Collections.emptyList());
+    }
+
     public static class Text implements Element {
 
         private final String content;
