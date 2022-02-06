@@ -10,9 +10,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-public final class Stencil {
+public final class DSL {
     
-    private Stencil() {
+    private DSL() {
         throw new IllegalAccessError();
     }
 
@@ -183,7 +183,7 @@ public final class Stencil {
 
     public static String render(List<Element> elements) {
         return elements.stream()
-            .map(Stencil::renderElement)
+            .map(DSL::renderElement)
             .reduce("", (a, b) -> a + b);
     }
 
