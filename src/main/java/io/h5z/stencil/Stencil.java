@@ -16,9 +16,24 @@ public final class Stencil {
         throw new IllegalAccessError();
     }
 
-    public interface Element {}
+    public static abstract class Element {
 
-    public static class HTMLElement implements Element {
+        public abstract <T> T accept(ElementVisitor<T> visitor);
+
+        @Override
+        public String toString() {
+            return render(this);
+        }
+
+    }
+
+    public static interface ElementVisitor<T> {
+        public T visit(HTMLElement element);
+        public T visit(HTMLPage page);
+        public T visit(Text text);
+    }
+
+    public static class HTMLElement extends Element {
         private String name;
         private final Map<String, String> attributes;
         private final List<? extends Element> nodes;
@@ -31,37 +46,193 @@ public final class Stencil {
 
         public String name() { return this.name; }
         public Map<String, String> attributes() { return this.attributes; }
-        public List<? extends Element> node() { return this.nodes;  }
+        public List<? extends Element> nodes() { return this.nodes;  }
 
         @Override
-        public String toString() { 
-            return new StringBuilder()
-                .append("<")
-                .append(this.name)
+        public <T> T accept(ElementVisitor<T> visitor) {
+            return visitor.visit(this);
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((attributes == null) ? 0 : attributes.hashCode());
+            result = prime * result + ((name == null) ? 0 : name.hashCode());
+            result = prime * result + ((nodes == null) ? 0 : nodes.hashCode());
+            return result;
+        }
+    }
+
+    public static class Text extends Element {
+
+        private final String content;
+
+        public Text(String content) {
+            this.content = content;
+        }
+
+        public String content() {
+            return this.content;
+        }
+
+        @Override
+        public <T> T accept(ElementVisitor<T> visitor) {
+            return visitor.visit(this);
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((content == null) ? 0 : content.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            Text other = (Text) obj;
+            if (content == null) {
+                if (other.content != null)
+                    return false;
+            } else if (!content.equals(other.content))
+                return false;
+            return true;
+        }
+
+    }
+
+    public static Element __(String content) {
+        return new Text(escapeHTML(content));
+    }
+
+    public static Element __u(String content) {
+        return new Text(content);
+    }
+
+    public enum DocType {
+        HTML5("<!DOCTYPE html>");
+
+        private final String value;
+
+        private DocType(String value) {
+            this.value = value;
+        }
+
+        public String value() {
+            return this.value;
+        }
+    }
+
+    public static class HTMLPage extends Element {
+
+        private final DocType docType;
+        private final HTMLElement element;
+
+        public HTMLPage(DocType docType, HTMLElement element) {
+            this.docType = docType;
+            this.element = element;
+        }
+
+        public DocType docType() {
+            return this.docType;
+        }
+
+        public HTMLElement element() {
+            return this.element;
+        }
+
+        @Override
+        public <T> T accept(ElementVisitor<T> visitor) {
+            return visitor.visit(this);
+        }
+
+    }
+
+
+    public static String render(Element element) {
+        return element.accept(new ElementVisitor<String>() {
+
+            @Override
+            public String visit(HTMLElement element) {
+                return renderHTMLElement(element);
+            }
+
+            @Override
+            public String visit(HTMLPage page) {
+                return new StringBuilder(page.docType().value())
+                    .append(renderHTMLElement(page.element()))
+                    .toString();
+
+            }
+
+            @Override
+            public String visit(Text text) {
+                return text.content;
+            }
+
+        });
+    }
+
+    public static String renderHTMLElement(HTMLElement element) {
+        StringBuilder elementBuilder = new StringBuilder()
                 .append(
-                    this.attributes.entrySet()
-                        .stream()
-                        .map(kv -> 
-                            null == kv.getValue() 
-                                ? kv.getKey()
-                                : String.format("%s=\"%s\"", kv.getKey(), kv.getValue()))
-                        .reduce("", (a, b) -> String.format("%s %s", a, b))
-                )   
-                .append(">")
-                .append(
-                    this.nodes.stream()
-                        .map(Element::toString)
+                    openingTag(
+                        element.name(),
+                        tagAttrs(element.attributes())));
+        
+        if (element.nodes().size() < 1) {
+            switch (element.name()) {
+                case "link":
+                case "meta":
+                case "input":
+                    return elementBuilder.toString();
+                default:
+                    return elementBuilder.append(" />")
+                        .toString();
+            }
+        } else {
+            return elementBuilder.append(
+                    element.nodes().stream()
+                        .map(e -> render(e))
                         .reduce("", (a, b) -> a + b))
-                .append("</")
-                .append(this.name)
-                .append(">")
+                .append(closingTag(element.name()))
                 .toString();
         }
+    }
 
-        protected String renderContent() {
-            return "";
-        }
+    private static String openingTag(String name, String attrs) {
+        return new StringBuilder()
+                .append("<")
+                .append(name)
+                .append(" ")
+                .append(attrs)
+                .append(">")
+                .toString();
+    }
 
+    private static String closingTag(String name) {
+        return new StringBuilder()
+            .append("</")
+            .append(name)
+            .append(">")
+            .toString();
+    }
+
+    private static String tagAttrs(Map<String, String> attrs) {
+        return attrs.entrySet()
+            .stream()
+            .map(kv -> 
+                null == kv.getValue() 
+                    ? kv.getKey()
+                    : String.format("%s=\"%s\"", kv.getKey(), kv.getValue()))
+            .reduce("", (a, b) -> String.format("%s %s", a, b));
     }
 
     public static class Html extends HTMLElement {
@@ -186,7 +357,7 @@ public final class Stencil {
     public static class Script extends HTMLElement {
 
         public Script(Map<String, String> attributes, String content) {
-            super("script", attributes, Arrays.asList(new UnsafeText(content)));
+            super("script", attributes, Arrays.asList(__u(content)));
         }
 
     }
@@ -1101,45 +1272,6 @@ public final class Stencil {
     public static Element br(String content) {
         return new HTMLElement("br", Collections.emptyMap(), Collections.emptyList());
     }
-
-    public static class Text implements Element {
-
-        private final String content;
-
-        public Text(String content) {
-            this.content = content;
-        }
-
-        @Override
-        public String toString() {
-            return escapeHTML(this.content);
-        }
-
-    }
-
-    public static Element __(String content) {
-        return new Text(content);
-    }
-
-    public static class UnsafeText implements Element {
-
-        private final String content;
-
-        public UnsafeText(String content) {
-            this.content = content;
-        }
-
-        @Override
-        public String toString() {
-            return this.content;
-        }
-
-    }
-
-    public static Element __u(String content) {
-        return new UnsafeText(content);
-    }
-
 
     // ----------------------------------------------------------------------------------
     // Attribute static factories
