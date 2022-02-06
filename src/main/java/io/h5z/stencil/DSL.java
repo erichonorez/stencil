@@ -216,7 +216,7 @@ public final class DSL {
                 .append(
                     openingTag(
                         element.name(),
-                        tagAttrs(element.attributes())));
+                        renderTagAttrs(element.attributes())));
         
         if (element.isVoidElement()) {
             return elementBuilder.toString();
@@ -248,18 +248,19 @@ public final class DSL {
             .toString();
     }
 
-    private static String tagAttrs(Map<String, String> attrs) {
+    private static String renderTagAttrs(Map<String, String> attrs) {
         return attrs.entrySet()
             .stream()
             .map(kv -> 
                 null == kv.getValue() 
                     ? kv.getKey()
                     : String.format("%s=\"%s\"", kv.getKey(), kv.getValue()))
-            .reduce("", (a, b) -> String.format("%s %s", a, b));
+            .reduce("", (a, b) -> String.format("%s %s", a, b))
+            .trim();
     }
 
     public static Element html(Map<String, String> attrs, List<Element> es) {
-        return new HTMLElement("section", Collections.emptyMap(), es);
+        return new HTMLElement("html", attrs, es);
     }
     
     public static Element html(Map<String, String> attrs, Element... es) {
@@ -349,7 +350,7 @@ public final class DSL {
     }
 
     public static Element body(Map<String, String> attrs, List<Element> es) {
-        return new HTMLElement("body", Collections.emptyMap(), es);
+        return new HTMLElement("body", attrs, es);
     }
     
     public static Element body(Map<String, String> attrs, Element... es) {
@@ -369,7 +370,7 @@ public final class DSL {
     // ----------------------------------------------------------------------------------
 
     public static HTMLElement section(Map<String, String> attrs, List<Element> es) {
-        return new HTMLElement("section", Collections.emptyMap(), es);
+        return new HTMLElement("section", attrs, es);
     }
     
     public static Element section(Map<String, String> attrs, Element... es) {
@@ -385,7 +386,7 @@ public final class DSL {
     }
 
     public static HTMLElement aside(Map<String, String> attrs, List<Element> es) {
-        return new HTMLElement("aside", Collections.emptyMap(), es);
+        return new HTMLElement("aside", attrs, es);
     }
     
     public static Element aside(Map<String, String> attrs, Element... es) {
@@ -401,7 +402,7 @@ public final class DSL {
     }
 
     public static Element footer(Map<String, String> attrs, List<Element> es) {
-        return new HTMLElement("aside", Collections.emptyMap(), es);
+        return new HTMLElement("aside", attrs, es);
     }
     
     public static Element footer(Map<String, String> attrs, Element... es) {
@@ -417,7 +418,7 @@ public final class DSL {
     }
 
     public static Element header(Map<String, String> attrs, List<Element> es) {
-        return new HTMLElement("header", Collections.emptyMap(), es);
+        return new HTMLElement("header", attrs, es);
     }
     
     public static Element header(Map<String, String> attrs, Element... es) {
@@ -433,7 +434,7 @@ public final class DSL {
     }
 
     public static Element main(Map<String, String> attrs, List<Element> es) {
-        return new HTMLElement("main", Collections.emptyMap(), es);
+        return new HTMLElement("main", attrs, es);
     }
     
     public static Element main(Map<String, String> attrs, Element... es) {
@@ -449,7 +450,7 @@ public final class DSL {
     }
 
     public static Element nav(Map<String, String> attrs, List<Element> es) {
-        return new HTMLElement("nav", Collections.emptyMap(), es);
+        return new HTMLElement("nav", attrs, es);
     }
     
     public static Element nav(Map<String, String> attrs, Element... es) {
@@ -465,7 +466,7 @@ public final class DSL {
     }
 
     public static Element article(Map<String, String> attrs, List<Element> es) {
-        return new HTMLElement("article", Collections.emptyMap(), es);
+        return new HTMLElement("article", attrs, es);
     }
     
     public static Element article(Map<String, String> attrs, Element... es) {
@@ -481,7 +482,7 @@ public final class DSL {
     }
 
     public static Element h1(Map<String, String> attrs, List<Element> es) {
-        return new HTMLElement("h1", Collections.emptyMap(), es);
+        return new HTMLElement("h1", attrs, es);
     }
 
     public static Element h1(Map<String, String> attrs, Element... es) {
@@ -505,7 +506,7 @@ public final class DSL {
     }
 
     public static Element h2(Map<String, String> attrs, List<Element> es) {
-        return new HTMLElement("h2", Collections.emptyMap(), es);
+        return new HTMLElement("h2", attrs, es);
     }
 
     public static Element h2(Map<String, String> attrs, Element... es) {
@@ -529,7 +530,7 @@ public final class DSL {
     }
 
     public static Element h3(Map<String, String> attrs, List<Element> es) {
-        return new HTMLElement("h3", Collections.emptyMap(), es);
+        return new HTMLElement("h3", attrs, es);
     }
 
     public static Element h3(Map<String, String> attrs, Element... es) {
@@ -553,7 +554,7 @@ public final class DSL {
     }
 
     public static Element h4(Map<String, String> attrs, List<Element> es) {
-        return new HTMLElement("h4", Collections.emptyMap(), es);
+        return new HTMLElement("h4", attrs, es);
     }
     
     public static Element h4(Map<String, String> attrs, Element... es) {
@@ -577,7 +578,7 @@ public final class DSL {
     }
 
     public static Element h5(Map<String, String> attrs, List<Element> es) {
-        return new HTMLElement("h5", Collections.emptyMap(), es);
+        return new HTMLElement("h5", attrs, es);
     }
     
     public static Element h5(Map<String, String> attrs, Element... es) {
@@ -601,7 +602,7 @@ public final class DSL {
     }
 
     public static Element h6(Map<String, String> attrs, List<Element> es) {
-        return new HTMLElement("h6", Collections.emptyMap(), es);
+        return new HTMLElement("h6", attrs, es);
     }
     
     public static Element h6(Map<String, String> attrs, Element... es) {
@@ -630,7 +631,7 @@ public final class DSL {
 
 
     public static Element div(Map<String, String> attrs, List<Element> es) {
-        return new HTMLElement("div", Collections.emptyMap(), es);
+        return new HTMLElement("div", attrs, es);
     }
 
     public static Element div(Map<String, String> attrs, Element... es) {
@@ -646,7 +647,7 @@ public final class DSL {
     }
 
     public static Element p(Map<String, String> attrs, List<Element> es) {
-        return new HTMLElement("p", Collections.emptyMap(), es);
+        return new HTMLElement("p", attrs, es);
     }
 
     public static Element p(Map<String, String> attrs, Element... es) {
@@ -670,7 +671,7 @@ public final class DSL {
     }
 
     public static Element ul(Map<String, String> attrs, List<Element> es) {
-        return new HTMLElement("ul", Collections.emptyMap(), es);
+        return new HTMLElement("ul", attrs, es);
     }
 
     public static Element ul(Map<String, String> attrs, Element... es) {
@@ -686,7 +687,7 @@ public final class DSL {
     }
 
     public static HTMLElement li(Map<String, String> attrs, List<Element> es) {
-        return new HTMLElement("li", Collections.emptyMap(), es);
+        return new HTMLElement("li", attrs, es);
     }
 
     public static Element li(Map<String, String> attrs, Element... es) {
@@ -710,7 +711,7 @@ public final class DSL {
     }
 
     public static HTMLElement ol(Map<String, String> attrs, List<Element> es) {
-        return new HTMLElement("ol", Collections.emptyMap(), es);
+        return new HTMLElement("ol", attrs, es);
     }
 
     public static Element ol(Map<String, String> attrs, Element... es) {
@@ -726,7 +727,7 @@ public final class DSL {
     }
 
     public static HTMLElement dl(Map<String, String> attrs, List<Element> es) {
-        return new HTMLElement("dl", Collections.emptyMap(), es);
+        return new HTMLElement("dl", attrs, es);
     }
 
     public static Element dl(Map<String, String> attrs, Element... es) {
@@ -742,7 +743,7 @@ public final class DSL {
     }
 
     public static HTMLElement dt(Map<String, String> attrs, List<Element> es) {
-        return new HTMLElement("dt", Collections.emptyMap(), es);
+        return new HTMLElement("dt", attrs, es);
     }
 
     public static Element dt(Map<String, String> attrs, Element... es) {
@@ -766,7 +767,7 @@ public final class DSL {
     }
 
     public static HTMLElement dd(Map<String, String> attrs, List<Element> es) {
-        return new HTMLElement("dd", Collections.emptyMap(), es);
+        return new HTMLElement("dd", attrs, es);
     }
 
     public static Element dd(Map<String, String> attrs, Element... es) {
@@ -1018,7 +1019,7 @@ public final class DSL {
 
 
     public static HTMLElement span(Map<String, String> attrs, List<Element> es) {
-        return new HTMLElement("span", Collections.emptyMap(), es);
+        return new HTMLElement("span", attrs, es);
     }
     
     public static Element span(Map<String, String> attrs, Element... es) {
@@ -1042,7 +1043,7 @@ public final class DSL {
     }
 
     public static HTMLElement a(Map<String, String> attrs, Element e) {
-        return new HTMLElement("a", Collections.emptyMap(), Arrays.asList(e));
+        return new HTMLElement("a", attrs, Arrays.asList(e));
     }
     
     public static Element a(Element e) {
@@ -1058,7 +1059,7 @@ public final class DSL {
     }
 
     public static HTMLElement i(Map<String, String> attrs, List<Element> es) {
-        return new HTMLElement("i", Collections.emptyMap(), es);
+        return new HTMLElement("i", attrs, es);
     }
     
     public static Element i(Map<String, String> attrs, Element... es) {
@@ -1082,7 +1083,7 @@ public final class DSL {
     }
 
     public static Element br(String content) {
-        return new HTMLElement("br", Collections.emptyMap(), Collections.emptyList());
+        return new HTMLElement("br", Collections.emptyMap(), Collections.emptyList(), true);
     }
 
     // ----------------------------------------------------------------------------------
@@ -1123,7 +1124,8 @@ public final class DSL {
         return attr(
             "class",
             classes.stream() 
-                .reduce("", (a, b) -> String.format("%s %s", a, b))); 
+                .reduce("", (a, b) -> String.format("%s %s", a, b))
+                .trim()); 
     }
 
     public static Entry<String, String> type(String type) {
@@ -1168,6 +1170,18 @@ public final class DSL {
 
     public static Entry<String, String> cols(int j) {
         return attr("cols", Integer.toString(j));
+    }
+
+    public static Entry<String, String> rel(String rel) {
+        return attr("rel", rel);
+    }
+
+    public static Entry<String, String> href(String href) {
+        return attr("href", href);
+    }
+
+    public static Entry<String, String> content(String content) {
+        return attr("content", content);
     }
 
     // ----------------------------------------------------------------------------------
