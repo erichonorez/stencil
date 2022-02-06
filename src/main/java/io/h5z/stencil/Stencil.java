@@ -29,7 +29,7 @@ public final class Stencil {
 
     public static interface ElementVisitor<T> {
         public T visit(HTMLElement element);
-        public T visit(HTMLPage page);
+        public T visit(DocType page);
         public T visit(Text text);
     }
 
@@ -37,16 +37,26 @@ public final class Stencil {
         private String name;
         private final Map<String, String> attributes;
         private final List<? extends Element> nodes;
+        private final boolean isVoidElement;
+
+        public HTMLElement(String name, Map<String, String> attributes, List<? extends Element> nodes, boolean isVoidElement) {
+            this.name = name;
+            this.attributes = attributes;
+            this.nodes = nodes;
+            this.isVoidElement = isVoidElement;
+        }
 
         public HTMLElement(String name, Map<String, String> attributes, List<? extends Element> nodes) {
             this.name = name;
             this.attributes = attributes;
             this.nodes = nodes;
+            this.isVoidElement = false;
         }
 
         public String name() { return this.name; }
         public Map<String, String> attributes() { return this.attributes; }
         public List<? extends Element> nodes() { return this.nodes;  }
+        public boolean isVoidElement() { return this.isVoidElement; }
 
         @Override
         public <T> T accept(ElementVisitor<T> visitor) {
@@ -116,12 +126,12 @@ public final class Stencil {
         return new Text(content);
     }
 
-    public enum DocType {
+    public enum DocTypeValue {
         HTML5("<!DOCTYPE html>");
 
         private final String value;
 
-        private DocType(String value) {
+        private DocTypeValue(String value) {
             this.value = value;
         }
 
@@ -130,22 +140,16 @@ public final class Stencil {
         }
     }
 
-    public static class HTMLPage extends Element {
+    public static class DocType extends Element {
 
-        private final DocType docType;
-        private final HTMLElement element;
+        private final DocTypeValue docType;
 
-        public HTMLPage(DocType docType, HTMLElement element) {
+        public DocType(DocTypeValue docType) {
             this.docType = docType;
-            this.element = element;
         }
 
-        public DocType docType() {
+        public DocTypeValue docType() {
             return this.docType;
-        }
-
-        public HTMLElement element() {
-            return this.element;
         }
 
         @Override
@@ -153,10 +157,41 @@ public final class Stencil {
             return visitor.visit(this);
         }
 
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((docType == null) ? 0 : docType.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            DocType other = (DocType) obj;
+            if (docType != other.docType)
+                return false;
+            return true;
+        }
+
     }
 
+    public static String render(List<Element> elements) {
+        return elements.stream()
+            .map(Stencil::renderElement)
+            .reduce("", (a, b) -> a + b);
+    }
 
-    public static String render(Element element) {
+    public static String render(Element... elements) {
+        return render(Arrays.asList(elements));
+    }
+
+    private static String renderElement(Element element) {
         return element.accept(new ElementVisitor<String>() {
 
             @Override
@@ -165,46 +200,34 @@ public final class Stencil {
             }
 
             @Override
-            public String visit(HTMLPage page) {
-                return new StringBuilder(page.docType().value())
-                    .append(renderHTMLElement(page.element()))
-                    .toString();
-
+            public String visit(DocType page) {
+                return page.docType().value();
             }
 
             @Override
             public String visit(Text text) {
-                return text.content;
+                return text.content();
             }
-
         });
     }
 
-    public static String renderHTMLElement(HTMLElement element) {
+    private static String renderHTMLElement(HTMLElement element) {
         StringBuilder elementBuilder = new StringBuilder()
                 .append(
                     openingTag(
                         element.name(),
                         tagAttrs(element.attributes())));
         
-        if (element.nodes().size() < 1) {
-            switch (element.name()) {
-                case "link":
-                case "meta":
-                case "input":
-                    return elementBuilder.toString();
-                default:
-                    return elementBuilder.append(" />")
-                        .toString();
-            }
-        } else {
-            return elementBuilder.append(
+        if (element.isVoidElement()) {
+            return elementBuilder.toString();
+        }
+
+        return elementBuilder.append(
                     element.nodes().stream()
                         .map(e -> render(e))
                         .reduce("", (a, b) -> a + b))
                 .append(closingTag(element.name()))
                 .toString();
-        }
     }
 
     private static String openingTag(String name, String attrs) {
@@ -235,135 +258,86 @@ public final class Stencil {
             .reduce("", (a, b) -> String.format("%s %s", a, b));
     }
 
-    public static class Html extends HTMLElement {
-
-        private final String docType;
-
-        public Html(String docType, Map<String, String> attributes, List<? extends Element> nodes) {
-            super("html", attributes, nodes);
-            this.docType = docType;
-        }
-
-        @Override
-        public String toString() {
-            return new StringBuilder()
-                .append(this.docType)
-                .append(super.toString())
-                .toString();
-        }
-
+    public static Element html(Map<String, String> attrs, List<Element> es) {
+        return new HTMLElement("section", Collections.emptyMap(), es);
+    }
+    
+    public static Element html(Map<String, String> attrs, Element... es) {
+        return html(attrs, Arrays.asList(es));
+    }
+    
+    public static Element html(List<Element> es) {
+        return section(Collections.emptyMap(), es);
+    }
+    
+    public static Element html(Element... es) {
+        return html(Collections.emptyMap(), Arrays.asList(es));
+    }
+    
+    public static List<Element> html5(Map<String, String> attrs, List<Element> es) {
+        return Arrays.asList(
+            new DocType(DocTypeValue.HTML5),
+            html(attrs, es));
+    }
+    
+    public static List<Element> html5(Map<String, String> attrs, Element... es) {
+        return Arrays.asList(
+            new DocType(DocTypeValue.HTML5),
+            html(attrs, es));
+    }
+    
+    public static List<Element> html5(List<Element> es) {
+        return Arrays.asList(
+            new DocType(DocTypeValue.HTML5),
+            html(es));
+    }
+    
+    public static List<Element> html5(Element... es) {
+        return Arrays.asList(
+            new DocType(DocTypeValue.HTML5),
+            html(es));
     }
 
-    public static Element html5(Element... elems) {
-        return new Html("<!DOCTYPE html>", Collections.emptyMap(), Arrays.asList(elems));
+    public static Element head(List<Element> es) {
+        return new HTMLElement("head", Collections.emptyMap(), es);
+    }
+    
+    public static Element head(Element... es) {
+        return head(Arrays.asList(es));
     }
 
-    public static Element html5(Map<String, String> attrs, Element... elems) {
-        return new Html("<!DOCTYPE html>", attrs, Arrays.asList(elems));
-    }
-
-    public static class Head extends HTMLElement {
-
-        public Head(List<Element> elems) {
-            super("head", Collections.emptyMap(), elems);
-        }
-
-    }
-
-    public static Element head(Element... elems) {
-        return new Head(Arrays.asList(elems));
-    }
-
-    public static class Meta extends HTMLElement {
-
-        public Meta(Map<String, String> attributes) {
-            super("meta", attributes, Collections.emptyList());
-        }
-
-        @Override
-        public String toString() {
-            return new StringBuilder()
-                .append("<")
-                .append(this.name())
-                .append(
-                    this.attributes().entrySet()
-                        .stream()
-                        .map(kv -> 
-                            null == kv.getValue() 
-                                ? kv.getKey()
-                                : String.format("%s=\"%s\"", kv.getKey(), kv.getValue()))
-                        .reduce("", (a, b) -> String.format("%s %s", a, b))
-                )   
-                .append(">")
-                .toString();
-        }
-
+    public static Element meta(Map<String, String> attrs) {
+        return new HTMLElement("meta", attrs, Collections.emptyList(), true);
     }
 
     @SafeVarargs
+    @SuppressWarnings("unchecked")
     public static Element meta(Entry<String, String>... attrs) {
-        return new Meta(new Hashtable() {{
+        return meta(new Hashtable() {{
             Arrays.stream(attrs)
                 .forEach(kv -> put(kv.getKey(), kv.getValue()));
         }});
-    }
-
-    public static class Title extends HTMLElement {
-
-        public Title(String content) {
-            super("title", Collections.emptyMap(), Arrays.asList(new Text(content)));
-        }
-
     }
 
     public static Element title(String title) {
-        return new Title(title);
+        return new HTMLElement("title", Collections.emptyMap(), Arrays.asList(__(title)));
     }
 
-    public static class Link extends HTMLElement {
-
-        public Link(Map<String, String> attributes) {
-            super("link", attributes, Collections.emptyList());
-        }
-
-        @Override
-        public String toString() {
-            return new StringBuilder()
-                .append("<")
-                .append(this.name())
-                .append(
-                    this.attributes().entrySet()
-                        .stream()
-                        .map(kv -> 
-                            null == kv.getValue() 
-                                ? kv.getKey()
-                                : String.format("%s=\"%s\"", kv.getKey(), kv.getValue()))
-                        .reduce("", (a, b) -> String.format("%s %s", a, b))
-                )   
-                .append(">")
-                .toString();
-        }
-
+    public static Element link(Map<String, String> attrs) {
+        return new HTMLElement("link", attrs, Collections.emptyList(), true);
     }
 
     @SafeVarargs
+    @SuppressWarnings("unchecked")
     public static Element link(Entry<String, String>... attrs) {
-        return new Meta(new Hashtable() {{
+        return link(new Hashtable() {{
             Arrays.stream(attrs)
                 .forEach(kv -> put(kv.getKey(), kv.getValue()));
         }});
     }
-
-    public static class Script extends HTMLElement {
-
-        public Script(Map<String, String> attributes, String content) {
-            super("script", attributes, Arrays.asList(__u(content)));
-        }
-
-    }
-
+    
     public static Element script(Map<String, String> attributes, String content) {
-        return new Script(attributes, content);
+        return new HTMLElement("script", attributes, Arrays.asList(__u(content)));
     }
 
     public static Element script(String content) {
@@ -374,20 +348,20 @@ public final class Stencil {
         return script(attributes, "");
     }
 
-    public static class Body extends HTMLElement {
-
-        public Body(Map<String, String> attributes, List<? extends Element> nodes) {
-            super("body", attributes, nodes);
-        }
-
+    public static Element body(Map<String, String> attrs, List<Element> es) {
+        return new HTMLElement("body", Collections.emptyMap(), es);
     }
-
-    public static Element body(Map<String, String> attrs, Element... elems) {
-        return new Body(attrs, Arrays.asList(elems));
+    
+    public static Element body(Map<String, String> attrs, Element... es) {
+        return body(attrs, Arrays.asList(es));
     }
-
-    public static Element body(Element... elems) {
-        return body(Collections.emptyMap(), elems);
+    
+    public static Element body(List<Element> es) {
+        return body(Collections.emptyMap(), es);
+    }
+    
+    public static Element body(Element... es) {
+        return body(Collections.emptyMap(), Arrays.asList(es));
     }
 
     // ----------------------------------------------------------------------------------
@@ -426,7 +400,7 @@ public final class Stencil {
         return aside(Collections.emptyMap(), Arrays.asList(es));
     }
 
-    public static HTMLElement footer(Map<String, String> attrs, List<Element> es) {
+    public static Element footer(Map<String, String> attrs, List<Element> es) {
         return new HTMLElement("aside", Collections.emptyMap(), es);
     }
     
@@ -442,7 +416,7 @@ public final class Stencil {
         return footer(Collections.emptyMap(), Arrays.asList(es));
     }
 
-    public static HTMLElement header(Map<String, String> attrs, List<Element> es) {
+    public static Element header(Map<String, String> attrs, List<Element> es) {
         return new HTMLElement("header", Collections.emptyMap(), es);
     }
     
@@ -458,7 +432,7 @@ public final class Stencil {
         return header(Collections.emptyMap(), Arrays.asList(es));
     }
 
-    public static HTMLElement main(Map<String, String> attrs, List<Element> es) {
+    public static Element main(Map<String, String> attrs, List<Element> es) {
         return new HTMLElement("main", Collections.emptyMap(), es);
     }
     
@@ -474,7 +448,7 @@ public final class Stencil {
         return main(Collections.emptyMap(), Arrays.asList(es));
     }
 
-    public static HTMLElement nav(Map<String, String> attrs, List<Element> es) {
+    public static Element nav(Map<String, String> attrs, List<Element> es) {
         return new HTMLElement("nav", Collections.emptyMap(), es);
     }
     
@@ -490,7 +464,7 @@ public final class Stencil {
         return nav(Collections.emptyMap(), Arrays.asList(es));
     }
 
-    public static HTMLElement article(Map<String, String> attrs, List<Element> es) {
+    public static Element article(Map<String, String> attrs, List<Element> es) {
         return new HTMLElement("article", Collections.emptyMap(), es);
     }
     
@@ -506,7 +480,7 @@ public final class Stencil {
         return article(Collections.emptyMap(), Arrays.asList(es));
     }
 
-    public static HTMLElement h1(Map<String, String> attrs, List<Element> es) {
+    public static Element h1(Map<String, String> attrs, List<Element> es) {
         return new HTMLElement("h1", Collections.emptyMap(), es);
     }
 
@@ -530,7 +504,7 @@ public final class Stencil {
         return h1(__(content));
     }
 
-    public static HTMLElement h2(Map<String, String> attrs, List<Element> es) {
+    public static Element h2(Map<String, String> attrs, List<Element> es) {
         return new HTMLElement("h2", Collections.emptyMap(), es);
     }
 
@@ -554,7 +528,7 @@ public final class Stencil {
         return h2(__(content));
     }
 
-    public static HTMLElement h3(Map<String, String> attrs, List<Element> es) {
+    public static Element h3(Map<String, String> attrs, List<Element> es) {
         return new HTMLElement("h3", Collections.emptyMap(), es);
     }
 
@@ -578,7 +552,7 @@ public final class Stencil {
         return h3(__(content));
     }
 
-    public static HTMLElement h4(Map<String, String> attrs, List<Element> es) {
+    public static Element h4(Map<String, String> attrs, List<Element> es) {
         return new HTMLElement("h4", Collections.emptyMap(), es);
     }
     
@@ -602,7 +576,7 @@ public final class Stencil {
         return h4(__(content));
     }
 
-    public static HTMLElement h5(Map<String, String> attrs, List<Element> es) {
+    public static Element h5(Map<String, String> attrs, List<Element> es) {
         return new HTMLElement("h5", Collections.emptyMap(), es);
     }
     
@@ -626,7 +600,7 @@ public final class Stencil {
         return h5(__(content));
     }
 
-    public static HTMLElement h6(Map<String, String> attrs, List<Element> es) {
+    public static Element h6(Map<String, String> attrs, List<Element> es) {
         return new HTMLElement("h6", Collections.emptyMap(), es);
     }
     
@@ -655,7 +629,7 @@ public final class Stencil {
     // ----------------------------------------------------------------------------------
 
 
-    public static HTMLElement div(Map<String, String> attrs, List<Element> es) {
+    public static Element div(Map<String, String> attrs, List<Element> es) {
         return new HTMLElement("div", Collections.emptyMap(), es);
     }
 
@@ -671,31 +645,31 @@ public final class Stencil {
         return div(Collections.emptyMap(), Arrays.asList(es));
     }
 
-    public static HTMLElement p(Map<String, String> attrs, List<Element> es) {
+    public static Element p(Map<String, String> attrs, List<Element> es) {
         return new HTMLElement("p", Collections.emptyMap(), es);
     }
 
-    public static HTMLElement p(Map<String, String> attrs, Element... es) {
+    public static Element p(Map<String, String> attrs, Element... es) {
         return p(attrs, Arrays.asList(es));
     }
 
-    public static HTMLElement p(List<Element> es) {
+    public static Element p(List<Element> es) {
         return p(Collections.emptyMap(), es);
     }
 
-    public static HTMLElement p(Element... es) {
+    public static Element p(Element... es) {
         return p(Collections.emptyMap(), Arrays.asList(es));
     }
 
-    public static HTMLElement p(Map<String, String> attrs, String content) {
+    public static Element p(Map<String, String> attrs, String content) {
         return p(attrs, __(content));
     }
 
-    public static HTMLElement p(String content) {
+    public static Element p(String content) {
         return p(__(content));
     }
 
-    public static HTMLElement ul(Map<String, String> attrs, List<Element> es) {
+    public static Element ul(Map<String, String> attrs, List<Element> es) {
         return new HTMLElement("ul", Collections.emptyMap(), es);
     }
 
@@ -819,19 +793,8 @@ public final class Stencil {
     // Form elements
     // ----------------------------------------------------------------------------------
 
-    /**
-     * @see <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form">The form element</a>
-     */
-    public static class Form extends HTMLElement {
-
-        public Form(Map<String, String> attributes, List<? extends Element> nodes) {
-            super("form", attributes, nodes);
-        }
-
-    }
-
     public static Element form(Map<String, String> attrs, List<Element> es) {
-        return new Form(attrs, es); 
+        return new HTMLElement("form", attrs, es); 
     }
 
     public static Element form(Map<String, String> attrs, Element... es) {
@@ -846,55 +809,15 @@ public final class Stencil {
         return form(Collections.emptyMap(), Arrays.asList(es));
     }
 
-    /**
-     * @see <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">The Input element</a>
-     */
-    public static class Input extends HTMLElement {
-
-        public Input(Map<String, String> attributes) {
-            super("input", attributes, Collections.emptyList());
-        }
-
-        @Override
-        public String toString() {
-            return new StringBuilder()
-                .append("<")
-                .append(this.name())
-                .append(
-                    this.attributes().entrySet()
-                        .stream()
-                        .map(kv -> 
-                            null == kv.getValue() 
-                                ? kv.getKey()
-                                : String.format("%s=\"%s\"", kv.getKey(), kv.getValue()))
-                        .reduce("", (a, b) -> String.format("%s %s", a, b))
-                )   
-                .append(" />")
-                .toString();
-        }
-
-    }
-
     public static Element input(Map<String, String> attrs) {
-        return new Input(attrs);
-    }
-
-    /**
-     * @see <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/label">The Label element</a>
-     */
-    public static class Label extends HTMLElement {
-
-        public Label(Map<String, String> attributes, List<? extends Element> nodes) {
-            super("label", attributes, nodes);
-        }
-
+        return new HTMLElement("input", attrs, Collections.emptyList(), true);
     }
 
     public static Element label(Map<String, String> attrs, String label, List<Element> es) {
         List<Element> xs = new ArrayList<>();
         xs.add(__(label));
         xs.addAll(es);
-        return new Label(attrs, xs);
+        return new HTMLElement("label", attrs, xs);
     }
 
     public static Element label(Map<String, String> attrs, String label, Element... es) {
@@ -917,23 +840,12 @@ public final class Stencil {
         return label(Collections.emptyMap(), label, Arrays.asList(es));
     }
 
-    /**
-     * @see <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button">The button element</a>
-     */
-    public static class Button extends HTMLElement {
-
-        public Button(Map<String, String> attributes, List<? extends Element> nodes) {
-            super("button", attributes, nodes);
-        }
-
-    }
-
     public static Element button(Map<String, String> attrs, Element... es) {
-        return button(attrs, Arrays.asList(es));
+        return new HTMLElement("button", attrs, Arrays.asList(es));
     }
 
     public static Element button(Map<String, String> attrs, List<Element> es) {
-        return new Button(attrs, es);
+        return button(attrs, es);
     }
 
     public static Element button(Element... es) {
@@ -952,19 +864,8 @@ public final class Stencil {
         return button(Collections.emptyMap(), Arrays.asList(__(content)));
     }
 
-    /**
-     * @see <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select">The HTML Select element</a>
-     */
-    public static class Select extends HTMLElement {
-
-        public Select(Map<String, String> attributes, List<? extends Element> nodes) {
-            super("select", attributes, nodes);
-        }
-
-    }
-
     public static Element select(Map<String, String> attrs, List<Element> es) {
-        return new Select(attrs, es);
+        return new HTMLElement("select", attrs, es);
     }
 
     public static Element select(Map<String, String> attrs, Element... es) {
@@ -979,38 +880,16 @@ public final class Stencil {
         return select(Collections.emptyMap(), Arrays.asList(es));
     }
 
-    /**
-     * @see <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/option">The HTML Option element</a>
-     */
-    public static class Option extends HTMLElement {
-
-        public Option(Map<String, String> attributes, List<? extends Element> nodes) {
-            super("option", attributes, nodes);
-        }
-
-    }
-
     public static Element option(Map<String, String> attrs, String content) {
-        return new Option(attrs, Arrays.asList(__(content)));
+        return new HTMLElement("option", attrs, Arrays.asList(__(content)));
     }
 
     public static Element option(String content) {
         return option(Collections.emptyMap(), content);
     }
 
-    /**
-     * @see <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea">The Textarea element</a>
-     */
-    public static class Textarea extends HTMLElement {
-
-        public Textarea(Map<String, String> attributes, List<? extends Element> nodes) {
-            super("textarea", attributes, nodes);
-        }
-
-    }
-
     public static Element textarea(Map<String, String> attrs, String content) {
-        return new Textarea(attrs, Arrays.asList(__(content)));
+        return new HTMLElement("textarea", attrs, Arrays.asList(__(content)));
     }
 
     public static Element textarea(String content) {
@@ -1021,19 +900,8 @@ public final class Stencil {
     // Table elements
     // ----------------------------------------------------------------------------------
 
-    /**
-     * <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/table">The Table element</a>
-     */
-    public static class Table extends HTMLElement {
-
-        public Table(Map<String, String> attributes, List<? extends Element> nodes) {
-            super("table", attributes, nodes);
-        }
-
-    }
-
     public static Element table(Map<String, String> attrs, List<Element> es) {
-        return new Table(attrs, es);
+        return new HTMLElement("table", attrs, es);
     }
 
     public static Element table(Map<String, String> attrs, Element... es) {
@@ -1048,19 +916,8 @@ public final class Stencil {
         return table(Arrays.asList(es));
     }
 
-    /**
-     * <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/thead">The Table Head element</a>
-     */
-    public static class THead extends HTMLElement {
-
-        public THead(Map<String, String> attributes, List<? extends Element> nodes) {
-            super("thead", attributes, nodes);
-        }
-
-    }
-
     public static Element thead(Map<String, String> attrs, List<Element> es) {
-        return new THead(attrs, es);
+        return new HTMLElement("thead", attrs, es);
     }
 
     public static Element thead(Map<String, String> attrs, Element... es) {
@@ -1075,19 +932,8 @@ public final class Stencil {
         return thead(Arrays.asList(es));
     }
 
-    /**
-     * <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/tbody">The Table Body element</a>
-     */
-    public static class TBody extends HTMLElement {
-
-        public TBody(Map<String, String> attributes, List<? extends Element> nodes) {
-            super("tbody", attributes, nodes);
-        }
-
-    }
-
     public static Element tbody(Map<String, String> attrs, List<Element> es) {
-        return new TBody(attrs, es);
+        return new HTMLElement("tbody", attrs, es);
     }
 
     public static Element tbody(Map<String, String> attrs, Element... es) {
@@ -1102,20 +948,8 @@ public final class Stencil {
         return tbody(Arrays.asList(es));
     }
 
-
-    /**
-     * <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/tr">The Table Row element</a>
-     */
-    public static class TR extends HTMLElement {
-
-        public TR(Map<String, String> attributes, List<? extends Element> nodes) {
-            super("tr", attributes, nodes);
-        }
-
-    }
-
     public static Element tr(Map<String, String> attrs, List<Element> es) {
-        return new TR(attrs, es);
+        return new HTMLElement("tr", attrs, es);
     }
 
     public static Element tr(Map<String, String> attrs, Element... es) {
@@ -1130,19 +964,8 @@ public final class Stencil {
         return tr(Arrays.asList(es));
     }
 
-    /**
-     * <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/th">The Table Header element</a>
-     */
-    public static class TH extends HTMLElement {
-
-        public TH(Map<String, String> attributes, List<? extends Element> nodes) {
-            super("th", attributes, nodes);
-        }
-
-    }
-
     public static Element th(Map<String, String> attrs, List<Element> es) {
-        return new TH(attrs, es);
+        return new HTMLElement("th", attrs, es);
     }
 
     public static Element th(Map<String, String> attrs, Element... es) {
@@ -1165,19 +988,8 @@ public final class Stencil {
         return th(Collections.emptyMap(), content);
     }
 
-    /**
-     * <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/td">The Table Data Cell element</a>
-     */
-    public static class TD extends HTMLElement {
-
-        public TD(Map<String, String> attributes, List<? extends Element> nodes) {
-            super("td", attributes, nodes);
-        }
-
-    }
-
     public static Element td(Map<String, String> attrs, List<Element> es) {
-        return new TD(attrs, es);
+        return new HTMLElement("td", attrs, es);
     }
 
     public static Element td(Map<String, String> attrs, Element... es) {
@@ -1397,6 +1209,7 @@ public final class Stencil {
 
     public static void main(String[] args) {
         String page = 
+
             html5(
                 head(
                     meta(attr("charset", "utf8")),
@@ -1454,8 +1267,8 @@ public final class Stencil {
                     script(
                         attrs(
                             attr("src", "https://h5z.io/script.js"))))).toString();
-        // System.out.println(page);
-        System.out.println(button(attrs(type("submit")), "Submit").toString());
+
+        System.out.println(page);
 
         Element table = 
 
