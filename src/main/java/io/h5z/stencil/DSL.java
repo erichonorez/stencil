@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Hashtable;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -314,10 +314,14 @@ public final class DSL {
     @SafeVarargs
     @SuppressWarnings("unchecked")
     public static Element meta(Entry<String, String>... attrs) {
-        return meta(new Hashtable() {{
+        return meta(new HashMap<String, String>() {{
             Arrays.stream(attrs)
                 .forEach(kv -> put(kv.getKey(), kv.getValue()));
         }});
+    }
+
+    public static Element title(Element title) {
+        return new HTMLElement("title", Collections.emptyMap(), Arrays.asList(title));
     }
 
     public static Element title(String title) {
@@ -331,7 +335,7 @@ public final class DSL {
     @SafeVarargs
     @SuppressWarnings("unchecked")
     public static Element link(Entry<String, String>... attrs) {
-        return link(new Hashtable() {{
+        return link(new HashMap<String, String>() {{
             Arrays.stream(attrs)
                 .forEach(kv -> put(kv.getKey(), kv.getValue()));
         }});
@@ -365,6 +369,14 @@ public final class DSL {
         return body(Collections.emptyMap(), Arrays.asList(es));
     }
 
+    public static Element body(String idAndClasses, List<Element> elements) {
+        return body(parseIdAndClasses(idAndClasses), elements);
+    }
+
+    public static Element body(String idAndClasses, Element... elements) {
+        return body(parseIdAndClasses(idAndClasses), elements);
+    }
+
     // ----------------------------------------------------------------------------------
     // Content sectionning elements
     // ----------------------------------------------------------------------------------
@@ -385,6 +397,14 @@ public final class DSL {
         return section(Collections.emptyMap(), Arrays.asList(es));
     }
 
+    public static Element section(String idAndClasses, List<Element> elements) {
+        return section(parseIdAndClasses(idAndClasses), elements);
+    }
+
+    public static Element section(String idAndClasses, Element... elements) {
+        return section(parseIdAndClasses(idAndClasses), elements);
+    }
+
     public static HTMLElement aside(Map<String, String> attrs, List<Element> es) {
         return new HTMLElement("aside", attrs, es);
     }
@@ -399,6 +419,14 @@ public final class DSL {
     
     public static Element aside(Element... es) {
         return aside(Collections.emptyMap(), Arrays.asList(es));
+    }
+
+    public static Element aside(String idAndClasses, List<Element> elements) {
+        return aside(parseIdAndClasses(idAndClasses), elements);
+    }
+
+    public static Element aside(String idAndClasses, Element... elements) {
+        return aside(parseIdAndClasses(idAndClasses), elements);
     }
 
     public static Element footer(Map<String, String> attrs, List<Element> es) {
@@ -417,6 +445,14 @@ public final class DSL {
         return footer(Collections.emptyMap(), Arrays.asList(es));
     }
 
+    public static Element footer(String idAndClasses, List<Element> elements) {
+        return footer(parseIdAndClasses(idAndClasses), elements);
+    }
+
+    public static Element footer(String idAndClasses, Element... elements) {
+        return footer(parseIdAndClasses(idAndClasses), elements);
+    }
+
     public static Element header(Map<String, String> attrs, List<Element> es) {
         return new HTMLElement("header", attrs, es);
     }
@@ -431,6 +467,14 @@ public final class DSL {
     
     public static Element header(Element... es) {
         return header(Collections.emptyMap(), Arrays.asList(es));
+    }
+
+    public static Element header(String idAndClasses, List<Element> elements) {
+        return header(parseIdAndClasses(idAndClasses), elements);
+    }
+
+    public static Element header(String idAndClasses, Element... elements) {
+        return header(parseIdAndClasses(idAndClasses), elements);
     }
 
     public static Element main(Map<String, String> attrs, List<Element> es) {
@@ -449,6 +493,14 @@ public final class DSL {
         return main(Collections.emptyMap(), Arrays.asList(es));
     }
 
+    public static Element main(String idAndClasses, List<Element> elements) {
+        return main(parseIdAndClasses(idAndClasses), elements);
+    }
+
+    public static Element main(String idAndClasses, Element... elements) {
+        return main(parseIdAndClasses(idAndClasses), elements);
+    }
+
     public static Element nav(Map<String, String> attrs, List<Element> es) {
         return new HTMLElement("nav", attrs, es);
     }
@@ -465,6 +517,14 @@ public final class DSL {
         return nav(Collections.emptyMap(), Arrays.asList(es));
     }
 
+    public static Element nav(String idAndClasses, List<Element> elements) {
+        return nav(parseIdAndClasses(idAndClasses), elements);
+    }
+
+    public static Element nav(String idAndClasses, Element... elements) {
+        return nav(parseIdAndClasses(idAndClasses), elements);
+    }
+
     public static Element article(Map<String, String> attrs, List<Element> es) {
         return new HTMLElement("article", attrs, es);
     }
@@ -479,6 +539,14 @@ public final class DSL {
     
     public static Element article(Element... es) {
         return article(Collections.emptyMap(), Arrays.asList(es));
+    }
+
+    public static Element article(String idAndClasses, List<Element> elements) {
+        return article(parseIdAndClasses(idAndClasses), elements);
+    }
+
+    public static Element article(String idAndClasses, Element... elements) {
+        return article(parseIdAndClasses(idAndClasses), elements);
     }
 
     public static Element h1(Map<String, String> attrs, List<Element> es) {
@@ -505,6 +573,18 @@ public final class DSL {
         return h1(__(content));
     }
 
+    public static Element h1(String idAndClasses, List<Element> elements) {
+        return h1(parseIdAndClasses(idAndClasses), elements);
+    }
+
+    public static Element h1(String idAndClasses, Element... elements) {
+        return h1(parseIdAndClasses(idAndClasses), elements);
+    }
+
+    public static Element h1(String idAndClasses, String content) {
+        return h1(parseIdAndClasses(idAndClasses), content);
+    }
+
     public static Element h2(Map<String, String> attrs, List<Element> es) {
         return new HTMLElement("h2", attrs, es);
     }
@@ -527,6 +607,18 @@ public final class DSL {
 
     public static Element h2(String content) {
         return h2(__(content));
+    }
+
+    public static Element h2(String idAndClasses, List<Element> elements) {
+        return h2(parseIdAndClasses(idAndClasses), elements);
+    }
+
+    public static Element h2(String idAndClasses, Element... elements) {
+        return h2(parseIdAndClasses(idAndClasses), elements);
+    }
+
+    public static Element h2(String idAndClasses, String content) {
+        return h2(parseIdAndClasses(idAndClasses), content);
     }
 
     public static Element h3(Map<String, String> attrs, List<Element> es) {
@@ -553,6 +645,18 @@ public final class DSL {
         return h3(__(content));
     }
 
+    public static Element h3(String idAndClasses, List<Element> elements) {
+        return h3(parseIdAndClasses(idAndClasses), elements);
+    }
+
+    public static Element h3(String idAndClasses, Element... elements) {
+        return h3(parseIdAndClasses(idAndClasses), elements);
+    }
+
+    public static Element h3(String idAndClasses, String content) {
+        return h3(parseIdAndClasses(idAndClasses), content);
+    }
+
     public static Element h4(Map<String, String> attrs, List<Element> es) {
         return new HTMLElement("h4", attrs, es);
     }
@@ -575,6 +679,18 @@ public final class DSL {
     
     public static Element h4(String content) {
         return h4(__(content));
+    }
+
+    public static Element h4(String idAndClasses, List<Element> elements) {
+        return h4(parseIdAndClasses(idAndClasses), elements);
+    }
+
+    public static Element h4(String idAndClasses, Element... elements) {
+        return h4(parseIdAndClasses(idAndClasses), elements);
+    }
+
+    public static Element h4(String idAndClasses, String content) {
+        return h4(parseIdAndClasses(idAndClasses), content);
     }
 
     public static Element h5(Map<String, String> attrs, List<Element> es) {
@@ -601,6 +717,18 @@ public final class DSL {
         return h5(__(content));
     }
 
+    public static Element h5(String idAndClasses, List<Element> elements) {
+        return h5(parseIdAndClasses(idAndClasses), elements);
+    }
+
+    public static Element h5(String idAndClasses, Element... elements) {
+        return h5(parseIdAndClasses(idAndClasses), elements);
+    }
+
+    public static Element h5(String idAndClasses, String content) {
+        return h5(parseIdAndClasses(idAndClasses), content);
+    }
+
     public static Element h6(Map<String, String> attrs, List<Element> es) {
         return new HTMLElement("h6", attrs, es);
     }
@@ -625,6 +753,18 @@ public final class DSL {
         return h6(__(content));
     }
 
+    public static Element h6(String idAndClasses, List<Element> elements) {
+        return h6(parseIdAndClasses(idAndClasses), elements);
+    }
+
+    public static Element h6(String idAndClasses, Element... elements) {
+        return h6(parseIdAndClasses(idAndClasses), elements);
+    }
+
+    public static Element h6(String idAndClasses, String content) {
+        return h6(parseIdAndClasses(idAndClasses), content);
+    }
+
     // ----------------------------------------------------------------------------------
     // Text elements
     // ----------------------------------------------------------------------------------
@@ -644,6 +784,14 @@ public final class DSL {
 
     public static Element div(Element... es) {
         return div(Collections.emptyMap(), Arrays.asList(es));
+    }
+
+    public static Element div(String idAndClasses, List<Element> elements) {
+        return div(parseIdAndClasses(idAndClasses), elements);
+    }
+
+    public static Element div(String idAndClasses, Element... elements) {
+        return div(parseIdAndClasses(idAndClasses), elements);
     }
 
     public static Element p(Map<String, String> attrs, List<Element> es) {
@@ -670,6 +818,14 @@ public final class DSL {
         return p(__(content));
     }
 
+    public static Element p(String idAndClasses, List<Element> elements) {
+        return p(parseIdAndClasses(idAndClasses), elements);
+    }
+
+    public static Element p(String idAndClasses, Element... elements) {
+        return p(parseIdAndClasses(idAndClasses), elements);
+    }
+
     public static Element ul(Map<String, String> attrs, List<Element> es) {
         return new HTMLElement("ul", attrs, es);
     }
@@ -684,6 +840,14 @@ public final class DSL {
 
     public static Element ul(Element... es) {
         return ul(Collections.emptyMap(), Arrays.asList(es));
+    }
+
+    public static Element ul(String idAndClasses, List<Element> elements) {
+        return ul(parseIdAndClasses(idAndClasses), elements);
+    }
+
+    public static Element ul(String idAndClasses, Element... elements) {
+        return ul(parseIdAndClasses(idAndClasses), elements);
     }
 
     public static HTMLElement li(Map<String, String> attrs, List<Element> es) {
@@ -710,6 +874,18 @@ public final class DSL {
         return li(__(content));
     }
 
+    public static Element li(String idAndClasses, List<Element> elements) {
+        return li(parseIdAndClasses(idAndClasses), elements);
+    }
+
+    public static Element li(String idAndClasses, Element... elements) {
+        return li(parseIdAndClasses(idAndClasses), elements);
+    }
+
+    public static Element li(String idAndClasses, String content) {
+        return li(parseIdAndClasses(idAndClasses), content);
+    }
+
     public static HTMLElement ol(Map<String, String> attrs, List<Element> es) {
         return new HTMLElement("ol", attrs, es);
     }
@@ -726,6 +902,14 @@ public final class DSL {
         return ol(Collections.emptyMap(), Arrays.asList(es));
     }
 
+    public static Element ol(String idAndClasses, List<Element> elements) {
+        return ol(parseIdAndClasses(idAndClasses), elements);
+    }
+
+    public static Element ol(String idAndClasses, Element... elements) {
+        return ol(parseIdAndClasses(idAndClasses), elements);
+    }
+
     public static HTMLElement dl(Map<String, String> attrs, List<Element> es) {
         return new HTMLElement("dl", attrs, es);
     }
@@ -740,6 +924,14 @@ public final class DSL {
 
     public static Element dl(Element... es) {
         return dl(Collections.emptyMap(), Arrays.asList(es));
+    }
+
+    public static Element dl(String idAndClasses, List<Element> elements) {
+        return dl(parseIdAndClasses(idAndClasses), elements);
+    }
+
+    public static Element dl(String idAndClasses, Element... elements) {
+        return dl(parseIdAndClasses(idAndClasses), elements);
     }
 
     public static HTMLElement dt(Map<String, String> attrs, List<Element> es) {
@@ -766,6 +958,18 @@ public final class DSL {
         return dt(__(content));
     }
 
+    public static Element dt(String idAndClasses, List<Element> elements) {
+        return dt(parseIdAndClasses(idAndClasses), elements);
+    }
+
+    public static Element dt(String idAndClasses, Element... elements) {
+        return dt(parseIdAndClasses(idAndClasses), elements);
+    }
+
+    public static Element dt(String idAndClasses, String content) {
+        return dt(parseIdAndClasses(idAndClasses), content);
+    }
+
     public static HTMLElement dd(Map<String, String> attrs, List<Element> es) {
         return new HTMLElement("dd", attrs, es);
     }
@@ -788,6 +992,18 @@ public final class DSL {
 
     public static Element dd(String content) {
         return dd(__(content));
+    }
+
+    public static Element dd(String idAndClasses, List<Element> elements) {
+        return dd(parseIdAndClasses(idAndClasses), elements);
+    }
+
+    public static Element dd(String idAndClasses, Element... elements) {
+        return dd(parseIdAndClasses(idAndClasses), elements);
+    }
+
+    public static Element dd(String idAndClasses, String content) {
+        return dd(parseIdAndClasses(idAndClasses), content);
     }
 
     // ----------------------------------------------------------------------------------
@@ -842,11 +1058,11 @@ public final class DSL {
     }
 
     public static Element button(Map<String, String> attrs, Element... es) {
-        return new HTMLElement("button", attrs, Arrays.asList(es));
+        return button(attrs, Arrays.asList(es));
     }
 
     public static Element button(Map<String, String> attrs, List<Element> es) {
-        return button(attrs, es);
+        return new HTMLElement("button", attrs, es);
     }
 
     public static Element button(Element... es) {
@@ -917,6 +1133,14 @@ public final class DSL {
         return table(Arrays.asList(es));
     }
 
+    public static Element table(String idAndClasses, List<Element> elements) {
+        return table(parseIdAndClasses(idAndClasses), elements);
+    }
+
+    public static Element table(String idAndClasses, Element... elements) {
+        return table(parseIdAndClasses(idAndClasses), elements);
+    }
+
     public static Element thead(Map<String, String> attrs, List<Element> es) {
         return new HTMLElement("thead", attrs, es);
     }
@@ -931,6 +1155,14 @@ public final class DSL {
 
     public static Element thead(Element... es) {
         return thead(Arrays.asList(es));
+    }
+
+    public static Element thead(String idAndClasses, List<Element> elements) {
+        return thead(parseIdAndClasses(idAndClasses), elements);
+    }
+
+    public static Element thead(String idAndClasses, Element... elements) {
+        return thead(parseIdAndClasses(idAndClasses), elements);
     }
 
     public static Element tbody(Map<String, String> attrs, List<Element> es) {
@@ -949,6 +1181,14 @@ public final class DSL {
         return tbody(Arrays.asList(es));
     }
 
+    public static Element tbody(String idAndClasses, List<Element> elements) {
+        return tbody(parseIdAndClasses(idAndClasses), elements);
+    }
+
+    public static Element tbody(String idAndClasses, Element... elements) {
+        return tbody(parseIdAndClasses(idAndClasses), elements);
+    }
+
     public static Element tr(Map<String, String> attrs, List<Element> es) {
         return new HTMLElement("tr", attrs, es);
     }
@@ -963,6 +1203,14 @@ public final class DSL {
 
     public static Element tr(Element... es) {
         return tr(Arrays.asList(es));
+    }
+
+    public static Element tr(String idAndClasses, List<Element> elements) {
+        return tr(parseIdAndClasses(idAndClasses), elements);
+    }
+
+    public static Element tr(String idAndClasses, Element... elements) {
+        return tr(parseIdAndClasses(idAndClasses), elements);
     }
 
     public static Element th(Map<String, String> attrs, List<Element> es) {
@@ -989,6 +1237,18 @@ public final class DSL {
         return th(Collections.emptyMap(), content);
     }
 
+    public static Element th(String idAndClasses, List<Element> elements) {
+        return th(parseIdAndClasses(idAndClasses), elements);
+    }
+
+    public static Element th(String idAndClasses, Element... elements) {
+        return th(parseIdAndClasses(idAndClasses), elements);
+    }
+
+    public static Element th(String idAndClasses, String content) {
+        return th(parseIdAndClasses(idAndClasses), content);
+    }
+
     public static Element td(Map<String, String> attrs, List<Element> es) {
         return new HTMLElement("td", attrs, es);
     }
@@ -1011,6 +1271,18 @@ public final class DSL {
 
     public static Element td(String content) {
         return td(Collections.emptyMap(), content);
+    }
+
+    public static Element td(String idAndClasses, List<Element> elements) {
+        return td(parseIdAndClasses(idAndClasses), elements);
+    }
+
+    public static Element td(String idAndClasses, Element... elements) {
+        return td(parseIdAndClasses(idAndClasses), elements);
+    }
+
+    public static Element td(String idAndClasses, String content) {
+        return td(parseIdAndClasses(idAndClasses), content);
     }
 
     // ----------------------------------------------------------------------------------
@@ -1040,6 +1312,18 @@ public final class DSL {
     
     public static Element span(String content) {
         return span(__(content));
+    }
+
+    public static Element span(String idAndClasses, List<Element> elements) {
+        return span(parseIdAndClasses(idAndClasses), elements);
+    }
+
+    public static Element span(String idAndClasses, Element... elements) {
+        return span(parseIdAndClasses(idAndClasses), elements);
+    }
+
+    public static Element span(String idAndClasses, String content) {
+        return span(parseIdAndClasses(idAndClasses), content);
     }
 
     public static HTMLElement a(Map<String, String> attrs, Element e) {
@@ -1075,11 +1359,23 @@ public final class DSL {
     }
     
     public static Element i(Map<String, String> attrs, String content) {
-        return span(attrs, __(content));
+        return i(attrs, __(content));
     }
     
     public static Element i(String content) {
-        return span(__(content));
+        return i(__(content));
+    }
+
+    public static Element i(String idAndClasses, List<Element> elements) {
+        return i(parseIdAndClasses(idAndClasses), elements);
+    }
+
+    public static Element i(String idAndClasses, Element... elements) {
+        return i(parseIdAndClasses(idAndClasses), elements);
+    }
+
+    public static Element i(String idAndClasses, String content) {
+        return i(parseIdAndClasses(idAndClasses), content);
     }
 
     public static Element br(String content) {
@@ -1110,6 +1406,10 @@ public final class DSL {
 
     public static Entry<String, String> charset(String charset) {
         return attr("charset", charset);
+    }
+
+    public static Entry<String, String> httpEquiv(String string) {
+        return attr("http-equiv", string);
     }
 
     public static Entry<String, String> id(String id) {
@@ -1164,6 +1464,10 @@ public final class DSL {
         return attr("selected", null);
     }
 
+    public static Entry<String, String> checked() {
+        return attr("checked", null);
+    }
+
     public static Entry<String, String> rows(int i) {
         return attr("rows", Integer.toString(i));
     }
@@ -1184,6 +1488,50 @@ public final class DSL {
         return attr("content", content);
     }
 
+    public static Entry<String, String> shape(String string) {
+        return attr("shape", string);
+    }
+
+    public static Entry<String, String> width(String string) {
+        return attr("width", string);
+    }
+
+    public static Entry<String, String> height(String string) {
+        return attr("height", string);
+    }
+
+    public static Entry<String, String> rowspan(String string) {
+        return attr("rowspan", string);
+    }
+
+    public static Entry<String, String> colspan(String string) {
+        return attr("colspan", string);
+    }
+
+    public static Entry<String, String> src(String string) {
+        return attr("src", string);
+    }
+
+    public static Entry<String, String> async(String string) {
+        return attr("async", string);
+    }
+
+    public static Entry<String, String> data(String data, String string) {
+        return attr("data-" + data, string);
+    }
+
+    public static Entry<String, String> aria(String aria, String string) {
+        return attr("aria-" + aria, string);
+    }
+
+    public static Entry<String, String> role(String string) {
+        return attr("role", string);
+    }
+
+    public static Entry<String, String> alt(String string) {
+        return attr("alt", string);
+    }
+
     // ----------------------------------------------------------------------------------
     // Helper classes and static methods
     // ----------------------------------------------------------------------------------
@@ -1192,6 +1540,27 @@ public final class DSL {
         return str.codePoints().mapToObj(c -> c > 127 || "\"'<>&".indexOf(c) != -1 ?
                 "&#" + c + ";" : new String(Character.toChars(c)))
            .collect(Collectors.joining());
+    }
+
+    public static Map<String, String> parseIdAndClasses(String idAndClasses) {
+        return _parseIdAndClasses(
+            new LinkedList<>(Arrays.asList(idAndClasses.split("\\."))), 
+            new HashMap<String, String>() {{
+                put("class", "");
+                put("id", "");
+            }});
+    }
+
+    private static Map<String, String> _parseIdAndClasses(LinkedList<String> parts, HashMap<String, String> acc) {
+        if (parts.size() < 1) { return acc; }
+        String current = parts.get(0);
+        if (current.startsWith("#")) {
+            acc.put("id", current.substring(1));
+        } else {
+            acc.put("class", acc.get("class") + " " + current);
+        }
+        parts.remove();
+        return _parseIdAndClasses(parts, acc);
     }
 
     private static class Tuple2<T1, T2> implements Entry<T1, T2> {
@@ -1234,7 +1603,7 @@ public final class DSL {
                         attr("href", "favicon.icon"),
                         attr("type", "image/x-icon"))),
                 body(
-                    h1(attrs(id("main-tite"), classes("big-title")), "This is a title h1"),
+                    h1("#main-tite.big-title", "This is a title h1"),
                     h2("This is a title h2"),
                     h3("This is a title h3"),
                     h4("This is a title h4"),
@@ -1257,7 +1626,7 @@ public final class DSL {
                                     attr("name", "login"),
                                     placeholder("toto@example.com"),
                                     required()))),
-                        label(attrs(attr("for", "password")), "password :"),
+                        label(attrs(_for("password")), "password :"),
                         input(
                             attrs(
                                 type("password"),
