@@ -312,7 +312,6 @@ public final class DSL {
     }
 
     @SafeVarargs
-    @SuppressWarnings("unchecked")
     public static Element meta(Entry<String, String>... attrs) {
         return meta(new HashMap<String, String>() {{
             Arrays.stream(attrs)
@@ -333,7 +332,6 @@ public final class DSL {
     }
 
     @SafeVarargs
-    @SuppressWarnings("unchecked")
     public static Element link(Entry<String, String>... attrs) {
         return link(new HashMap<String, String>() {{
             Arrays.stream(attrs)
